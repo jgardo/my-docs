@@ -1,0 +1,7 @@
+{
+  "name": "jgDocs",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}
