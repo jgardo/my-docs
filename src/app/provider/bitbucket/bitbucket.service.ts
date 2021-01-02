@@ -1,35 +1,46 @@
 import {Injectable, NgZone} from '@angular/core';
 import { Observable } from 'rxjs';
-import { BitbucketClient } from './bitbucket-client';
-import { BroadcastChannel } from 'broadcast-channel';
-
+import { ModalController } from '@ionic/angular';
+import {BitbucketWizardComponent} from './bitbucket-wizard/bitbucket-wizard.component';
+import {BitbucketClient} from "./bitbucket-client";
 @Injectable({
   providedIn: 'root'
 })
 export class BitbucketService {
 
   constructor(private window: Window,
-              private ngZone: NgZone) { }
+              private ngZone: NgZone,
+              private modalController: ModalController
+              ) {
 
-  retrieveClient(clientId: string): Observable<BitbucketClient> {
+  }
+
+  integrateNewRepository(): Observable<BitbucketClient> {
     return new Observable(subscriber => {
-      const redirectUrl = encodeURIComponent(this.window.location.origin + '/provider/bitbucket/oauth');
-      const newWindow = this.window.open('https://bitbucket.org/site/oauth2/authorize'
-          + `?client_id=${clientId}`
-          + `&response_type=token`
-          + `&redirect_uri=${redirectUrl}`);
-
-      const channel = new BroadcastChannel('bitbucketAuthorization');
-      channel.onmessage = msg => {
-        if (msg.access_token) {
-          newWindow.close();
-          this.ngZone.run(() => {
-            subscriber.next(new BitbucketClient(msg.access_token));
-            subscriber.complete();
-            channel.close();
-          });
-        }
-      };
+      this.modalController.create({
+        component: BitbucketWizardComponent
+      }).then(modal => {
+          modal.present()
+              .then(m => {
+                  return m;
+              })
+              .catch(err => {
+                  subscriber.error(err);
+              });
+          modal.onDidDismiss()
+              .then(m => {
+                  const { data } = m;
+                  subscriber.next(data as BitbucketClient);
+                  subscriber.complete();
+                  return m;
+              })
+              .catch(err => {
+                  subscriber.error(err);
+              });
+      })
+      .catch(err => {
+        subscriber.error(err);
+      });
     });
   }
 }

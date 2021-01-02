@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { BitbucketService } from '../provider/bitbucket/bitbucket.service';
-import { BitbucketClient } from '../provider/bitbucket/bitbucket-client';
 
 @Component({
   selector: 'app-explore-container',
@@ -9,24 +8,17 @@ import { BitbucketClient } from '../provider/bitbucket/bitbucket-client';
 })
 export class ExploreContainerComponent implements OnInit {
   @Input() name: string;
-
-  private bitbucketClient: BitbucketClient = null;
-  repoNames: Array<string> = [];
-
+  entries: any[];
   constructor(private bitbucketService: BitbucketService) { }
 
   ngOnInit() {}
 
   openAuthorizeWindow() {
-    const clientId = 'HMEFVsQLCF9CQAKPwL';
-    this.bitbucketService.retrieveClient(clientId).subscribe((data) => {
-      this.bitbucketClient = data;
-
-      this.bitbucketClient.initialize().subscribe((repos) => {
-        // this.bitbucketClient.listAllRepos().subscribe((repos) => {
-        //   this.repoNames = repos.map(repo => repo.toString());
-        // });
-      });
-    });
+    this.bitbucketService.integrateNewRepository()
+        .subscribe(bitbucketClient => {
+          bitbucketClient.listAllFiles('').subscribe(entries => {
+            this.entries = entries.map(e => e.path);
+          });
+        });
   }
 }

@@ -1,42 +1,44 @@
-import { Bitbucket } from 'bitbucket';
+import {Bitbucket, Schema} from 'bitbucket';
 import {Observable} from 'rxjs';
 import {APIClient} from 'bitbucket/lib/bitbucket';
+import Workspace = Schema.Workspace;
+import Repository = Schema.Repository;
+import Branch = Schema.Branch;
+import Treeentry = Schema.Treeentry;
 
 export class BitbucketClient {
 
-    private bitbucket: APIClient;
-    private workspaceName: string;
+    constructor(private bitbucket: APIClient,
+                private workspace: Workspace,
+                private repository: Repository,
+                private branch: Branch,
+                private latestCommit: string) {
 
-    constructor(private accessToken: string) {
-        const clientOptions = {
-            auth: {
-                token: accessToken,
-            },
-        };
-
-        const bitbucket = new Bitbucket(clientOptions);
-        this.bitbucket = bitbucket;
     }
 
-    public initialize(): Observable<void> {
-        return new Observable<void>((subscriber) => {
-            this.bitbucket.workspaces.getWorkspaces({ })
-            .then(workspaces => {
-                if (workspaces.data.size === 1) {
-                    this.workspaceName = workspaces.data.values[0].name;
-                    subscriber.complete();
-                } else {
-                    subscriber.error('Too many workspaces.');
-                }
+    public refresh(): Observable<string> {
+        return new Observable<string>((subscriber) => {
+            this.bitbucket.commits.list({
+                repo_slug: this.repository.uuid,
+                workspace: this.workspace.name
             })
-            .catch(err => subscriber.error(err));
+            .then(({ data }) => {
+                this.latestCommit = data.values[0].hash;
+                subscriber.next(data.values[0].hash);
+                subscriber.complete();
+            })
+            .catch((err) => subscriber.error(err));
         });
     }
 
-    public listAllRepos(): Observable<Array<any>> {
-        return new Observable<Array<any>>((subscriber) => {
-            const params = { workspace: this.workspaceName };
-            this.bitbucket.repositories.list(params)
+    public listAllFiles(path: string): Observable<Array<Treeentry>> {
+        return new Observable<Array<Treeentry>>((subscriber) => {
+            this.bitbucket.source.read({
+                node: this.latestCommit,
+                path,
+                repo_slug: this.repository.uuid,
+                workspace: this.workspace.name
+            })
             .then(({ data }) => {
                 subscriber.next(data.values);
                 subscriber.complete();
