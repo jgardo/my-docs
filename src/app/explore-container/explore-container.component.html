@@ -1,4 +1,11 @@
 <div id="container">
   <strong>{{ name }}</strong>
   <p>Explore <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+  <ion-button (click)="openAuthorizeWindow()">Open access</ion-button>
+
+  <ion-list>
+    <ion-item *ngFor="let item of entries">
+      <ion-label>{{item}}</ion-label>
+    </ion-item>
+  </ion-list>
 </div>
