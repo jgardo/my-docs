@@ -1,5 +1,5 @@
-import {Observable} from 'rxjs';
-import {APIClient} from 'bitbucket/lib/bitbucket';
+import { Observable } from 'rxjs';
+import { APIClient } from 'bitbucket/lib/bitbucket';
 import { BitbucketConfig } from './model/bitbucket-config';
 
 export class BitbucketClient {
@@ -15,12 +15,12 @@ export class BitbucketClient {
                 repo_slug: this.config.repository.uuid,
                 workspace: this.config.workspace.name
             })
-            .then(({ data }) => {
-                this.config.latestCommit = data.values[0].hash;
-                subscriber.next(data.values[0].hash);
-                subscriber.complete();
-            })
-            .catch((err) => subscriber.error(err));
+                .then(({data}) => {
+                    this.config.latestCommit = data.values[0].hash;
+                    subscriber.next(data.values[0].hash);
+                    subscriber.complete();
+                })
+                .catch((err) => subscriber.error(err));
         });
     }
 
@@ -33,11 +33,11 @@ export class BitbucketClient {
                 workspace: this.config.workspace.name,
                 pagelen: 100
             })
-            .then(({ data }) => {
-                subscriber.next(data);
-                subscriber.complete();
-            })
-            .catch((err) => subscriber.error(err));
+                .then(({data}) => {
+                    subscriber.next(data);
+                    subscriber.complete();
+                })
+                .catch((err) => subscriber.error(err));
         });
     }
 }

@@ -1,4 +1,4 @@
-import {DataSource} from './data-source';
+import { DataSource } from './data-source';
 
 export class FileSystemEntry {
     constructor(

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Resolve, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { Observable, of, EMPTY } from 'rxjs';
+import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
+import { Observable } from 'rxjs';
 import { DataProviderService } from 'src/app/service/data-provider.service';
 
 @Injectable({
@@ -9,9 +9,9 @@ import { DataProviderService } from 'src/app/service/data-provider.service';
 export class ItemResolverService implements Resolve<any> {
     constructor(
         private dataProviderService: DataProviderService
-        ) {
+    ) {
 
-        }
+    }
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
         const url = route.url

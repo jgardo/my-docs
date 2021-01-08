@@ -1,37 +1,37 @@
 <ion-content>
-  <ion-slides #Slides pager="true"
-              style='height: 100%; width: 100%; object-fit: contain'
-              [options]="slideOpts">
-    <ion-slide style='height: 100%; width: 100%; display:block;'>
-      <ion-button (click)="authorize()">Zaloguj się</ion-button>
-    </ion-slide>
-    <ion-slide style='height: 100%; width: 100%; display:block;'>
-      <h1>Wybierz workspace:</h1><br/>
-      <ion-list>
-        <ion-item *ngFor="let workspace of workspaces"
-                  (click)="selectWorkspace(workspace)"
-                  detail button="true">
-          <ion-button slot="end">
-            Wybierz
-          </ion-button>
-          <ion-ripple-effect></ion-ripple-effect>
-          <ion-label>{{workspace.name}}</ion-label>
-        </ion-item>
-      </ion-list>
-    </ion-slide>
-    <ion-slide style='height: 100%; width: 100%; display:block;'>
-      <h1>Wybierz repozytorium:</h1><br/>
-      <ion-list>
-        <ion-item *ngFor="let repository of repositories"
-                  (click)="selectRepository(repository)"
-                  detail button="true">
-          <ion-button slot="end">
-            Wybierz
-          </ion-button>
-          <ion-ripple-effect></ion-ripple-effect>
-          <ion-label>{{repository.name}}</ion-label>
-        </ion-item>
-      </ion-list>
-    </ion-slide>
-  </ion-slides>
+    <ion-slides #Slides [options]="slideOpts"
+                pager="true"
+                style='height: 100%; width: 100%; object-fit: contain'>
+        <ion-slide style='height: 100%; width: 100%; display:block;'>
+            <ion-button (click)="authorize()">Zaloguj się</ion-button>
+        </ion-slide>
+        <ion-slide style='height: 100%; width: 100%; display:block;'>
+            <h1>Wybierz workspace:</h1><br/>
+            <ion-list>
+                <ion-item (click)="selectWorkspace(workspace)"
+                          *ngFor="let workspace of workspaces"
+                          button="true" detail>
+                    <ion-button slot="end">
+                        Wybierz
+                    </ion-button>
+                    <ion-ripple-effect></ion-ripple-effect>
+                    <ion-label>{{workspace.name}}</ion-label>
+                </ion-item>
+            </ion-list>
+        </ion-slide>
+        <ion-slide style='height: 100%; width: 100%; display:block;'>
+            <h1>Wybierz repozytorium:</h1><br/>
+            <ion-list>
+                <ion-item (click)="selectRepository(repository)"
+                          *ngFor="let repository of repositories"
+                          button="true" detail>
+                    <ion-button slot="end">
+                        Wybierz
+                    </ion-button>
+                    <ion-ripple-effect></ion-ripple-effect>
+                    <ion-label>{{repository.name}}</ion-label>
+                </ion-item>
+            </ion-list>
+        </ion-slide>
+    </ion-slides>
 </ion-content>

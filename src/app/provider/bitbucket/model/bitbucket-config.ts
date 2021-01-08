@@ -1,4 +1,4 @@
-import {Schema} from 'bitbucket';
+import { Schema } from 'bitbucket';
 import Workspace = Schema.Workspace;
 import Repository = Schema.Repository;
 import Branch = Schema.Branch;
