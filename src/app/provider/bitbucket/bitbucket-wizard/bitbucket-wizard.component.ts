@@ -5,7 +5,7 @@ import Workspace = Schema.Workspace;
 import {IonSlides, ModalController} from '@ionic/angular';
 import Repository = Schema.Repository;
 import Branch = Schema.Branch;
-import {BitbucketClient} from "../bitbucket-client";
+import {BitbucketConfig} from '../model/bitbucket-config';
 
 @Component({
   selector: 'app-bitbucket-wizard',
@@ -67,13 +67,15 @@ export class BitbucketWizardComponent implements AfterViewInit {
     this.selectedBranch = repository.mainbranch;
     this.bitbucketClientProviderService.fetchLatestCommit(this.bitbucket, this.selectedWorkspace.name, repository.name)
       .subscribe((commit) => {
-        this.modalController.dismiss(new BitbucketClient(
-            this.bitbucket,
-            this.selectedWorkspace,
+        const config = new BitbucketConfig(this.selectedWorkspace,
             this.selectedRepository,
             this.selectedBranch,
             commit
-        ));
+        );
+        this.modalController.dismiss({
+          bitbucket: this.bitbucket,
+          config
+        });
       });
   }
 

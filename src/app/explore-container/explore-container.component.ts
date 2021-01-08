@@ -16,7 +16,7 @@ export class ExploreContainerComponent implements OnInit {
   openAuthorizeWindow() {
     this.bitbucketService.integrateNewRepository()
         .subscribe(bitbucketClient => {
-          bitbucketClient.listAllFiles('').subscribe(entries => {
+          bitbucketClient.resolvePath('').subscribe(entries => {
             this.entries = entries.map(e => e.path);
           });
         });

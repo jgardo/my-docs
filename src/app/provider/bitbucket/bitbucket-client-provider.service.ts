@@ -1,7 +1,7 @@
 import {Injectable, NgZone} from '@angular/core';
-import {Observable} from "rxjs";
-import {BroadcastChannel} from "broadcast-channel";
-import {APIClient, Bitbucket, Schema} from "bitbucket";
+import {Observable} from 'rxjs';
+import {BroadcastChannel} from 'broadcast-channel';
+import {APIClient, Bitbucket, Schema} from 'bitbucket';
 import Workspace = Schema.Workspace;
 import Repository = Schema.Repository;
 

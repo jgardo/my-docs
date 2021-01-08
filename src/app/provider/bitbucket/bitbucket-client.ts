@@ -1,29 +1,22 @@
-import {Bitbucket, Schema} from 'bitbucket';
 import {Observable} from 'rxjs';
 import {APIClient} from 'bitbucket/lib/bitbucket';
-import Workspace = Schema.Workspace;
-import Repository = Schema.Repository;
-import Branch = Schema.Branch;
-import Treeentry = Schema.Treeentry;
+import { BitbucketConfig } from './model/bitbucket-config';
 
 export class BitbucketClient {
 
     constructor(private bitbucket: APIClient,
-                private workspace: Workspace,
-                private repository: Repository,
-                private branch: Branch,
-                private latestCommit: string) {
+                public config: BitbucketConfig) {
 
     }
 
     public refresh(): Observable<string> {
         return new Observable<string>((subscriber) => {
             this.bitbucket.commits.list({
-                repo_slug: this.repository.uuid,
-                workspace: this.workspace.name
+                repo_slug: this.config.repository.uuid,
+                workspace: this.config.workspace.name
             })
             .then(({ data }) => {
-                this.latestCommit = data.values[0].hash;
+                this.config.latestCommit = data.values[0].hash;
                 subscriber.next(data.values[0].hash);
                 subscriber.complete();
             })
@@ -31,16 +24,17 @@ export class BitbucketClient {
         });
     }
 
-    public listAllFiles(path: string): Observable<Array<Treeentry>> {
-        return new Observable<Array<Treeentry>>((subscriber) => {
+    public resolvePath(path: string): Observable<any> {
+        return new Observable<any>((subscriber) => {
             this.bitbucket.source.read({
-                node: this.latestCommit,
+                node: this.config.latestCommit,
                 path,
-                repo_slug: this.repository.uuid,
-                workspace: this.workspace.name
+                repo_slug: this.config.repository.uuid,
+                workspace: this.config.workspace.name,
+                pagelen: 100
             })
             .then(({ data }) => {
-                subscriber.next(data.values);
+                subscriber.next(data);
                 subscriber.complete();
             })
             .catch((err) => subscriber.error(err));
