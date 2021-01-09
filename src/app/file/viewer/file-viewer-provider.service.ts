@@ -2,6 +2,7 @@ import { ComponentFactoryResolver, Inject, Injectable, Type, ViewContainerRef } 
 import { FileViewer } from './file-viewer';
 import { DefaultFileViewerComponent } from './default-file-viewer/default-file-viewer.component';
 import { File } from '../../provider/facade/model/file';
+import { MarkdownFileViewerComponent } from './markdown-file-viewer/markdown-file-viewer.component';
 
 @Injectable()
 export class FileViewerProviderService {
@@ -9,7 +10,7 @@ export class FileViewerProviderService {
   constructor(@Inject(ComponentFactoryResolver) private factoryResolver) {}
 
   addViewer(viewContainerRef: ViewContainerRef, file: File) {
-    const viewerComponentType: Type<FileViewer> = this.resolveComponentType();
+    const viewerComponentType: Type<FileViewer> = this.resolveComponentType(file);
 
     const factory = this.factoryResolver
         .resolveComponentFactory(viewerComponentType);
@@ -20,8 +21,10 @@ export class FileViewerProviderService {
     viewContainerRef.insert(component.hostView);
   }
 
-  private resolveComponentType(): Type<FileViewer> {
-    const viewerComponent: Type<FileViewer> = DefaultFileViewerComponent;
-    return viewerComponent;
+  private resolveComponentType(file: File): Type<FileViewer> {
+    if (file.fileSystemEntry.name.endsWith('.md')) {
+      return MarkdownFileViewerComponent;
+    }
+    return DefaultFileViewerComponent;
   }
 }

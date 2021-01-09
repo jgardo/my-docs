@@ -29,6 +29,11 @@
                 "glob": "**/*.svg",
                 "input": "node_modules/ionicons/dist/ionicons/svg",
                 "output": "./svg"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/ace-builds/src-min",
+                "output": "./assets/ace-builds/"
               }
             ],
             "styles": [
@@ -37,9 +42,15 @@
               },
               {
                 "input": "src/global.scss"
-              }
+              },
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/font-awesome/css/font-awesome.min.css",
+              "node_modules/ngx-markdown-editor/dist/assets/highlight.js/agate.min.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/ngx-markdown-editor/dist/assets/highlight.js/highlight.min.js",
+              "node_modules/ngx-markdown-editor/dist/assets/marked.min.js"
+            ]
           },
           "configurations": {
             "production": {

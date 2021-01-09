@@ -7,17 +7,20 @@ import { FilePage } from './file.page';
 import { FilePageRoutingModule } from './file-routing.module';
 import { DefaultFileViewerComponent } from './viewer/default-file-viewer/default-file-viewer.component';
 import { FileViewerProviderService } from './viewer/file-viewer-provider.service';
+import { MarkdownFileViewerComponent } from './viewer/markdown-file-viewer/markdown-file-viewer.component';
+import { LMarkdownEditorModule } from 'ngx-markdown-editor/dist';
 
 @NgModule({
     imports: [
         IonicModule,
         CommonModule,
         FormsModule,
-        FilePageRoutingModule
+        FilePageRoutingModule,
+        LMarkdownEditorModule
     ],
     providers: [FileViewerProviderService],
-    declarations: [FilePage, DefaultFileViewerComponent],
-    entryComponents: [DefaultFileViewerComponent]
+    declarations: [FilePage, DefaultFileViewerComponent, MarkdownFileViewerComponent],
+    entryComponents: [DefaultFileViewerComponent, MarkdownFileViewerComponent]
 })
 export class FilePageModule {
 }

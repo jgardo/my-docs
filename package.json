@@ -25,7 +25,11 @@
     "@ionic/angular": "^5.0.0",
     "@ionic/storage": "^2.3.1",
     "bitbucket": "^2.4.2",
+    "bootstrap": "^4.5.3",
+    "brace": "^0.11.1",
     "broadcast-channel": "^3.3.0",
+    "font-awesome": "^4.7.0",
+    "ngx-markdown-editor": "^3.3.0",
     "rxjs": "~6.5.5",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.3"

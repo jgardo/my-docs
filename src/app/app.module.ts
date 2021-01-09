@@ -9,12 +9,16 @@ import { IonicStorageModule } from '@ionic/storage';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { FormsModule } from '@angular/forms';
+import { LMarkdownEditorModule } from 'ngx-markdown-editor/dist';
 
 @NgModule({
     declarations: [AppComponent],
     entryComponents: [],
     imports: [
         BrowserModule,
+        FormsModule, // make sure FormsModule is imported to make ngModel work
+        LMarkdownEditorModule,
         IonicModule.forRoot(),
         IonicStorageModule.forRoot(),
         AppRoutingModule],
