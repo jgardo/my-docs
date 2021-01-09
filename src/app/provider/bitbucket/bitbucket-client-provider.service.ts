@@ -14,8 +14,8 @@ export class BitbucketClientProviderService {
                 private ngZone: NgZone) {
     }
 
-
     retrieveRawClient(clientId: string): Observable<APIClient> {
+        // TODO create single subject, and authorize only once
         return new Observable(subscriber => {
             const redirectUrl = encodeURIComponent(this.window.location.origin + '/provider/bitbucket/oauth');
             const newWindow = this.window.open('https://bitbucket.org/site/oauth2/authorize'

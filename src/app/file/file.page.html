@@ -1,0 +1,12 @@
+<ion-header [translucent]="true">
+    <ion-toolbar>
+        <ion-title>
+            <ion-icon icon="document"></ion-icon>
+            <ion-label> /{{file?.fileSystemEntry?.dataSource.id}}{{file?.fileSystemEntry?.path}} </ion-label>
+        </ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+    <ng-template #dynamic></ng-template>
+</ion-content>

@@ -34,7 +34,12 @@ export class FileSystemPage implements OnInit, OnDestroy {
 
     goToItem(item: FileSystemEntry) {
         const asArray = item.path.substr(1).split('/');
-        this.router.navigate(['/tabs/file-system/bb-jg-docs-recipes-data'].concat(asArray));
+
+        // TODO
+        const fileSystemPrefix = item.type === 'DIRECTORY'
+                ? '/tabs/file-system/bb-jg-docs-recipes-data'
+                : '/tabs/file/bb-jg-docs-recipes-data';
+        this.router.navigate([fileSystemPrefix].concat(asArray));
     }
 
     goBack() {
@@ -42,6 +47,8 @@ export class FileSystemPage implements OnInit, OnDestroy {
             .substr(0, this.fileSystemEntry.path.lastIndexOf('/'))
             .substr(1);
         const asArray = parentPath.split('/');
+
+        // TODO
         this.router.navigate(['/tabs/file-system/bb-jg-docs-recipes-data'].concat(asArray));
     }
 

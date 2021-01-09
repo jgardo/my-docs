@@ -12,6 +12,7 @@
         <ion-list-header>
             Lista plików:
         </ion-list-header>
+        <!-- TODO - fix somehow routerLink and android custom effect -->
         <ion-item (click)="goBack()"
                   *ngIf="fileSystemEntry.path !== '/'" detail>
             <ion-icon name="folder" slot="start"></ion-icon>

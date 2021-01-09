@@ -7,7 +7,6 @@ export class FileSystemEntry {
         public dataSource: DataSource,
         public type: 'FILE' | 'DIRECTORY' | 'LINK',
         public entries?: FileSystemEntry[],
-        public content?: string,
     ) {
 
     }

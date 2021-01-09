@@ -16,6 +16,10 @@ const routes: Routes = [
                 loadChildren: () => import('../file-system/file-system.module').then(m => m.FileSystemPageModule)
             },
             {
+                path: 'file',
+                loadChildren: () => import('../file/file.module').then(m => m.FilePageModule)
+            },
+            {
                 path: '',
                 redirectTo: '/tabs/home',
                 pathMatch: 'full'
