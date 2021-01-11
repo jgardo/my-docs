@@ -40,6 +40,11 @@ export class FileSystemFacadeCacheService {
                                 return of(this.facadesById[id]);
                             } else {
                                 return this.bitbucketService.createBitbucketClient(datasource.config).pipe(
+                                    tap(result => {
+                                        setTimeout(() => {
+                                            this.facadesById[id] = null;
+                                        }, result.expiresIn);
+                                    }),
                                     map(bc => new BitbucketFileSystemFacadeService(datasource, bc)),
                                     tap(facade => {
                                         this.facadesById[id] = facade as FileSystemFacade;

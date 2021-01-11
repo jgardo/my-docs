@@ -39,7 +39,7 @@ export class BitbucketService {
         const clientId = 'HMEFVsQLCF9CQAKPwL';
 
         return this.bitbucketClientProviderService.retrieveRawClient(clientId)
-            .pipe(map(bitbucket => new BitbucketClient(bitbucket, config)));
+            .pipe(map(bitbucket => new BitbucketClient(bitbucket.bitbucket, config, bitbucket.expiresIn)));
     }
 
     integrateNewRepository(): Observable<BitbucketClient> {

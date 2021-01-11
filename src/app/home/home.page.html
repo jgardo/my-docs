@@ -26,7 +26,7 @@
         </ion-item>
         <ion-item *ngFor="let repo of dataSources"
                   [routerLink]="['/tabs/file-system/' + repo.id]"
-                  button>
+                  detail>
             <ion-icon name="file-tray-stacked" slot="start"></ion-icon>
             <ion-label>{{repo.name}}</ion-label>
         </ion-item>

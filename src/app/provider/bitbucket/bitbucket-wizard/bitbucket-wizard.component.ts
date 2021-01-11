@@ -42,7 +42,7 @@ export class BitbucketWizardComponent implements AfterViewInit {
     authorize() {
         const clientId = 'HMEFVsQLCF9CQAKPwL';
         this.bitbucketClientProviderService.retrieveRawClient(clientId).subscribe((data) => {
-            this.bitbucket = data;
+            this.bitbucket = data.bitbucket;
 
             this.bitbucketClientProviderService.listWorkspaces(this.bitbucket).subscribe((workspaces) => {
                 this.workspaces = workspaces;

@@ -1,5 +1,5 @@
 import { Injectable, NgZone } from '@angular/core';
-import { Observable } from 'rxjs';
+import { AsyncSubject, Observable } from 'rxjs';
 import { BroadcastChannel } from 'broadcast-channel';
 import { APIClient, Bitbucket, Schema } from 'bitbucket';
 import Workspace = Schema.Workspace;
@@ -10,23 +10,33 @@ import Repository = Schema.Repository;
 })
 export class BitbucketClientProviderService {
 
+    private bitbucketClientResultAsyncSubject: AsyncSubject<BitbucketClientResult>;
+    private newWindow: Window;
+
     constructor(private window: Window,
                 private ngZone: NgZone) {
+        this.bitbucketClientResultAsyncSubject = new AsyncSubject<BitbucketClientResult>();
+        this.newWindow = null;
     }
 
-    retrieveRawClient(clientId: string): Observable<APIClient> {
-        // TODO create single subject, and authorize only once
-        return new Observable(subscriber => {
+    retrieveRawClient(clientId: string): Observable<BitbucketClientResult> {
+        if (!this.bitbucketClientResultAsyncSubject.isStopped && this.newWindow === null) {
             const redirectUrl = encodeURIComponent(this.window.location.origin + '/provider/bitbucket/oauth');
-            const newWindow = this.window.open('https://bitbucket.org/site/oauth2/authorize'
+            this.newWindow = this.window.open('https://bitbucket.org/site/oauth2/authorize'
                 + `?client_id=${clientId}`
                 + `&response_type=token`
                 + `&redirect_uri=${redirectUrl}`);
 
             const channel = new BroadcastChannel('bitbucketAuthorization');
             channel.onmessage = msg => {
+                // tslint:disable-next-line:radix
+                const expiresIn = msg.expires_in && parseInt(msg.expires_in) * 1000;
+
+                setTimeout(() => {
+                    this.bitbucketClientResultAsyncSubject = new AsyncSubject<BitbucketClientResult>();
+                }, expiresIn);
                 if (msg.access_token) {
-                    newWindow.close();
+                    this.newWindow.close();
                     this.ngZone.run(() => {
                         const clientOptions = {
                             auth: {
@@ -35,13 +45,19 @@ export class BitbucketClientProviderService {
                         };
 
                         const bitbucket = new Bitbucket(clientOptions);
-                        subscriber.next(bitbucket);
-                        subscriber.complete();
+
+                        const result = new BitbucketClientResult(bitbucket, expiresIn);
+
+                        this.bitbucketClientResultAsyncSubject.next(result);
+                        this.bitbucketClientResultAsyncSubject.complete();
                         channel.close();
+                        this.newWindow = null;
                     });
                 }
             };
-        });
+        }
+
+        return this.bitbucketClientResultAsyncSubject;
     }
 
     listWorkspaces(bitbucket: APIClient): Observable<Workspace[]> {
@@ -83,5 +99,10 @@ export class BitbucketClientProviderService {
                 })
                 .catch((err) => subscriber.error(err));
         });
+    }
+}
+
+export class BitbucketClientResult {
+    constructor(public bitbucket: APIClient, public expiresIn?: number) {
     }
 }

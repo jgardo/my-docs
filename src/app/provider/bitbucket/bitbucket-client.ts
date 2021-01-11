@@ -5,7 +5,8 @@ import { BitbucketConfig } from './model/bitbucket-config';
 export class BitbucketClient {
 
     constructor(private bitbucket: APIClient,
-                public config: BitbucketConfig) {
+                public config: BitbucketConfig,
+                public expiresIn?: number) {
 
     }
 

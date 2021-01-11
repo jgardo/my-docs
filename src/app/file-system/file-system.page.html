@@ -8,17 +8,16 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-    <ion-list *ngIf="fileSystemEntry?.entries">
+    <ion-list>
         <ion-list-header>
             Lista plików:
         </ion-list-header>
-        <!-- TODO - fix somehow routerLink and android custom effect -->
-        <ion-item (click)="goBack()"
+        <ion-item (click)="goBack()" [routerLink]="['..']"
                   *ngIf="fileSystemEntry.path !== '/'" detail>
             <ion-icon name="folder" slot="start"></ion-icon>
             <ion-label>..</ion-label>
         </ion-item>
-        <ion-item (click)="goToItem(item)"
+        <ion-item (click)="goToItem(item)" [routerLink]="[item.name]"
                   *ngFor="let item of fileSystemEntry?.entries; let i = index" detail>
             <ion-icon *ngIf="item.type === 'DIRECTORY'" name="folder" slot="start"></ion-icon>
             <ion-icon *ngIf="item.type === 'FILE'" name="document" slot="start"></ion-icon>
