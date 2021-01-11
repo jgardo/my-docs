@@ -13,10 +13,13 @@ Thumbs.db
 UserInterfaceState.xcuserstate
 $RECYCLE.BIN/
 
+deploy.sh
+
 *.log
 log.txt
 npm-debug.log*
 
+/.firebase
 /.idea
 /.ionic
 /.sass-cache
