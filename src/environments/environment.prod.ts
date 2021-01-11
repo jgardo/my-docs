@@ -1,3 +1,4 @@
 export const environment = {
-    production: true
+    production: true,
+    bitbucketClientId: process.env.BITBUCKET_CLIENT_ID
 };

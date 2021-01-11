@@ -3,6 +3,7 @@ import { BitbucketClientProviderService } from '../bitbucket-client-provider.ser
 import { APIClient, Schema } from 'bitbucket';
 import { IonSlides, ModalController } from '@ionic/angular';
 import { BitbucketConfig } from '../model/bitbucket-config';
+import { environment } from '../../../../environments/environment';
 import Workspace = Schema.Workspace;
 import Repository = Schema.Repository;
 import Branch = Schema.Branch;
@@ -40,7 +41,7 @@ export class BitbucketWizardComponent implements AfterViewInit {
     }
 
     authorize() {
-        const clientId = 'HMEFVsQLCF9CQAKPwL';
+        const clientId = environment.bitbucketClientId;
         this.bitbucketClientProviderService.retrieveRawClient(clientId).subscribe((data) => {
             this.bitbucket = data.bitbucket;
 

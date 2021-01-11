@@ -7,6 +7,7 @@ import { Storage } from '@ionic/storage';
 import { BitbucketConfig } from './model/bitbucket-config';
 import { BitbucketClientProviderService } from './bitbucket-client-provider.service';
 import { map } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
     providedIn: 'root'
@@ -36,7 +37,7 @@ export class BitbucketService {
     }
 
     createBitbucketClient(config: BitbucketConfig): Observable<BitbucketClient> {
-        const clientId = 'HMEFVsQLCF9CQAKPwL';
+        const clientId = environment.bitbucketClientId;
 
         return this.bitbucketClientProviderService.retrieveRawClient(clientId)
             .pipe(map(bitbucket => new BitbucketClient(bitbucket.bitbucket, config, bitbucket.expiresIn)));
