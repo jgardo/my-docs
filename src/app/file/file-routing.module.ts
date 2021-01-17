@@ -6,7 +6,7 @@ import { FileResolverService } from '../provider/facade/file-resolver.service';
 
 const routes: Routes = [
     {
-        path: ':fileSystemId',
+        path: '',
         children: [{
             path: '**',
             component: FilePage,

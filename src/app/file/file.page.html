@@ -1,7 +1,9 @@
 <ion-header [translucent]="true">
     <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-back-button></ion-back-button>
+        </ion-buttons>
         <ion-title>
-            <ion-icon icon="document"></ion-icon>
             <ion-label> /{{file?.fileSystemEntry?.dataSource.id}}{{file?.fileSystemEntry?.path}} </ion-label>
         </ion-title>
     </ion-toolbar>

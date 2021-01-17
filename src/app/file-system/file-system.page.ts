@@ -33,25 +33,34 @@ export class FileSystemPage implements OnInit, OnDestroy {
     }
 
     goToItem(item: FileSystemEntry) {
+        this.router.navigate(this.itemPath(item));
+    }
+
+    itemPath(item: FileSystemEntry) {
         const asArray = item.path.substr(1).split('/');
 
-        const fileSystemPrefix = item.type === 'DIRECTORY'
-                ? this.getFileSystemPrefix()
-                : this.getFilePrefix();
-        this.router.navigate([fileSystemPrefix].concat(asArray));
+        const fileSystemPrefix = this.getFileSystemPrefix();
+
+        asArray[asArray.length - 1] = asArray[asArray.length - 1] +
+            (item.type === 'FILE' ? '-details' : '');
+        return [fileSystemPrefix].concat(asArray);
     }
 
     goBack() {
+        this.router.navigate(this.backPath());
+    }
+
+    backPath() {
         const parentPath = this.fileSystemEntry.path
             .substr(0, this.fileSystemEntry.path.lastIndexOf('/'))
             .substr(1);
         const asArray = parentPath.split('/');
 
-        this.router.navigate([this.getFileSystemPrefix()].concat(asArray));
+        return [this.getFileSystemPrefix()].concat(asArray);
     }
 
     private getFileSystemPrefix() {
-        return '/tabs/file-system/' + this.fileSystemEntry.dataSource.id;
+        return '/tabs/home/file-system/' + this.fileSystemEntry.dataSource.id;
     }
 
     private getFilePrefix() {

@@ -19,12 +19,16 @@ export class FileResolverService implements Resolve<File> {
         const url = route.url
             .map(a => a.path)
             .join('/');
+        const suffixLessUrl = url.endsWith('-details')
+            ? url.substr(0, url.length - '-details'.length)
+            : url;
+
         const paramMap = {};
         // tslint:disable-next-line:forin
 
         return this.fileSystemFacadeResolverService.resolve(route, state)
             .pipe(
-                concatMap(fsf => this.resolveForUrlAndParamMap(fsf, url, paramMap))
+                concatMap(fsf => this.resolveForUrlAndParamMap(fsf, suffixLessUrl, paramMap))
             );
     }
 

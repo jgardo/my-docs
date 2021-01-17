@@ -14,7 +14,9 @@ export class FileSystemFacadeResolverService implements Resolve<FileSystemFacade
     }
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<FileSystemFacade> {
-        const url = state.url;
+        const url = state.url.endsWith('-details')
+            ? state.url.substr(0, state.url.length - '-details'.length)
+            : state.url;
         const paramMap = {};
 
         for (const key of route.paramMap.keys) {

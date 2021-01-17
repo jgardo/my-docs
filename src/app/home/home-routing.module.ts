@@ -6,7 +6,11 @@ const routes: Routes = [
     {
         path: '',
         component: HomePage,
-    }
+    },
+    {
+        path: 'file-system',
+        loadChildren: () => import('../file-system/file-system.module').then(m => m.FileSystemPageModule)
+    },
 ];
 
 @NgModule({
