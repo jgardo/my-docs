@@ -2,7 +2,7 @@ import { FileSystemFacade } from '../facade/file-system-facade';
 import { Observable } from 'rxjs';
 import { FileSystemEntry } from '../facade/model/file-system-entry';
 import { BitbucketClient } from './bitbucket-client';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { Schema } from 'bitbucket';
 import { DataSource } from '../facade/model/data-source';
 import { File } from '../facade/model/file';
@@ -25,7 +25,8 @@ export class BitbucketFileSystemFacadeService implements FileSystemFacade {
             .pipe(map(data => this.createFileSystemEntry(path, data)));
     }
 
-    private createFileSystemEntry(path: string, data): FileSystemEntry {
+    private createFileSystemEntry(path: string, result): FileSystemEntry {
+        const { data } = result;
         if (path === '' || path.charAt(0) !== '/') {
             path = '/' + path;
         }
@@ -43,7 +44,21 @@ export class BitbucketFileSystemFacadeService implements FileSystemFacade {
                 }
                 return new FileSystemEntry(name, '/' + e.path, this.dataSource, type);
             });
-            return new FileSystemEntry(n, path, this.dataSource, 'DIRECTORY', entries);
+
+            const nextPage = () => {
+                // TODO BITBUCKET API DO NOT SUPPORT "page" parameter.
+                // TODO Fix, when it would be supported.
+                this.bitbucketClient.resolvePath(path, result.data.page + 1)
+                    .pipe(
+                        map(d => this.createFileSystemEntry(path, d)),
+                        tap(res => {
+                            entries.push(...res.entries);
+                            result.data.page = result.data.page + 1;
+                        })
+                    ).subscribe();
+            };
+
+            return new FileSystemEntry(n, path, this.dataSource, 'DIRECTORY', entries, nextPage);
         } else {
             return new FileSystemEntry(n, path, this.dataSource, 'FILE', []);
         }
@@ -57,7 +72,7 @@ export class BitbucketFileSystemFacadeService implements FileSystemFacade {
                 if (fileSystemEntry.type !== 'FILE') {
                     throw new Error('This is not a file!!!');
                 } else {
-                    return new File(fileSystemEntry, data);
+                    return new File(fileSystemEntry, data.data);
                 }
             }));
     }

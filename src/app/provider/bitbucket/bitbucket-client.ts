@@ -4,6 +4,8 @@ import { BitbucketConfig } from './model/bitbucket-config';
 
 export class BitbucketClient {
 
+    private static readonly PAGE_LEN = 1000;
+
     constructor(private bitbucket: APIClient,
                 public config: BitbucketConfig,
                 public expiresIn?: number) {
@@ -25,16 +27,16 @@ export class BitbucketClient {
         });
     }
 
-    public resolvePath(path: string): Observable<any> {
+    public resolvePath(path: string, page = 1): Observable<any> {
         return new Observable<any>((subscriber) => {
             this.bitbucket.source.read({
                 node: this.config.latestCommit,
                 path,
                 repo_slug: this.config.repository.uuid,
                 workspace: this.config.workspace.name,
-                pagelen: 100
+                pagelen: BitbucketClient.PAGE_LEN
             })
-                .then(({data}) => {
+                .then((data) => {
                     subscriber.next(data);
                     subscriber.complete();
                 })
