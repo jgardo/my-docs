@@ -34,33 +34,48 @@ export class BitbucketFileSystemFacadeService implements FileSystemFacade {
 
         if (data.values) {
             const fse = data.values as unknown as Array<Treeentry>;
-            const entries = fse.map(e => {
-                const name = e.path.substr(e.path.lastIndexOf('/') + 1);
-                let type = null;
-                if (e.type === 'commit_directory') {
-                    type = 'DIRECTORY';
-                } else if (e.type === 'commit_file') {
-                    type = 'FILE';
-                }
-                return new FileSystemEntry(name, '/' + e.path, this.dataSource, type);
-            });
-
-            const nextPage = () => {
-                // TODO BITBUCKET API DO NOT SUPPORT "page" parameter.
-                // TODO Fix, when it would be supported.
-                this.bitbucketClient.resolvePath(path, result.data.page + 1)
-                    .pipe(
-                        map(d => this.createFileSystemEntry(path, d)),
-                        tap(res => {
-                            entries.push(...res.entries);
-                            result.data.page = result.data.page + 1;
-                        })
-                    ).subscribe();
-            };
+            const entries = this.createEntries(fse);
+            const nextPage = this.createNextPage(data, path);
 
             return new FileSystemEntry(n, path, this.dataSource, 'DIRECTORY', entries, nextPage);
         } else {
             return new FileSystemEntry(n, path, this.dataSource, 'FILE', []);
+        }
+    }
+
+    private createEntries(fse: Array<Schema.Treeentry>): Array<FileSystemEntry> {
+        return fse.map(e => {
+            const name = e.path.substr(e.path.lastIndexOf('/') + 1);
+            let type = null;
+            if (e.type === 'commit_directory') {
+                type = 'DIRECTORY';
+            } else if (e.type === 'commit_file') {
+                type = 'FILE';
+            }
+            return new FileSystemEntry(name, '/' + e.path, this.dataSource, type);
+        });
+    }
+
+    private createNextPage(data, path: string): () => Observable<FileSystemEntry> {
+        const url = data.next && new URL(data.next);
+        const hasNextPage = !!data.next && url.searchParams.has('page');
+
+        if (hasNextPage) {
+            return () => new Observable(subscriber => {
+                const page = url.searchParams.get('page');
+
+                this.bitbucketClient.resolvePath(path, page)
+                    .pipe(
+                        map(d => this.createFileSystemEntry(path, d)),
+                        tap(res => {
+                            subscriber.next(res);
+                            subscriber.complete();
+                        })
+                    )
+                    .subscribe();
+            });
+        } else {
+            return null;
         }
     }
 

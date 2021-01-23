@@ -4,7 +4,7 @@
 
 export const environment = {
     production: false,
-    bitbucketClientId: 'HMEFVsQLCF9CQAKPwL'
+    bitbucketClientId: 'SR2eTYwBSHt7ThQurC'
 };
 
 /*
