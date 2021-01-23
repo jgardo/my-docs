@@ -41,8 +41,8 @@ export class BitbucketDataSourceFacadeService implements DataSourceFacade {
             }));
     }
 
-    delete(): Observable<void> {
-        return undefined;
+    delete(dataSource: DataSource): Observable<void> {
+        return this.bitbucketServide.delete(dataSource.config.repository.uuid);
     }
 
 }

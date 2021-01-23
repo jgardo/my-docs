@@ -87,4 +87,24 @@ export class BitbucketService {
                 });
         });
     }
+
+    delete(repoUuid: string): Observable<void> {
+        return new Observable(subscriber => {
+            this.storage.get(BitbucketService.PROVIDERS_KEY)
+                .then(p => {
+                    const providers = p as Array<BitbucketConfig> || [] as Array<BitbucketConfig>;
+
+                    const existing = providers.findIndex((v) => v.repository.uuid === repoUuid);
+                    if (existing >= 0) {
+                        providers.splice(existing, 1);
+                    }
+
+                    this.storage.set(BitbucketService.PROVIDERS_KEY, providers)
+                        .then(() => {
+                            subscriber.next();
+                            subscriber.complete();
+                        });
+                });
+        });
+    }
 }

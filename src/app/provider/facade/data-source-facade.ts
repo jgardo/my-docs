@@ -6,5 +6,5 @@ export interface DataSourceFacade {
 
     create(): Observable<DataSource>;
 
-    delete(): Observable<void>;
+    delete(dataSource: DataSource): Observable<void>;
 }

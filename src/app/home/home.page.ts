@@ -33,4 +33,10 @@ export class HomePage implements OnInit {
             .pipe(concatMap(x => this.refresh()))
             .subscribe();
     }
+
+    delete(repo: DataSource) {
+        return this.dataSourceFacade.delete(repo)
+            .pipe(concatMap(x => this.refresh()))
+            .subscribe();
+    }
 }
