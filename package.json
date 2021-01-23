@@ -1,8 +1,8 @@
 {
   "name": "jgDocs",
   "version": "0.0.1",
-  "author": "Ionic Framework",
-  "homepage": "https://ionicframework.com/",
+  "author": "jgardo.dev",
+  "homepage": "https://jgardo.dev/",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -62,5 +62,5 @@
     "typescript": "~3.9.5",
     "webpack": "^4.45.0"
   },
-  "description": "An Ionic project"
+  "description": "Custom docs browser"
 }
