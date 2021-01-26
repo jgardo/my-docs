@@ -9,7 +9,7 @@ export class FileViewerProviderService {
 
   constructor(@Inject(ComponentFactoryResolver) private factoryResolver) {}
 
-  addViewer(viewContainerRef: ViewContainerRef, file: File) {
+  addViewer(viewContainerRef: ViewContainerRef, file: File): FileViewer {
     const viewerComponentType: Type<FileViewer> = this.resolveComponentType(file);
 
     const factory = this.factoryResolver
@@ -19,6 +19,8 @@ export class FileViewerProviderService {
     const viewerComponent: FileViewer = component.instance as FileViewer;
     viewerComponent.setFile(file);
     viewContainerRef.insert(component.hostView);
+
+    return viewerComponent;
   }
 
   private resolveComponentType(file: File): Type<FileViewer> {

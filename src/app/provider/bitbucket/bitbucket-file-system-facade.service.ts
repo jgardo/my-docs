@@ -91,4 +91,11 @@ export class BitbucketFileSystemFacadeService implements FileSystemFacade {
                 }
             }));
     }
+
+    refresh(): Observable<void> {
+        return this.bitbucketClient.refresh()
+            .pipe(map(() => {
+                return;
+            }));
+    }
 }

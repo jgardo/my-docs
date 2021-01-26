@@ -7,4 +7,5 @@ export interface FileSystemFacade {
     getDataSource(): DataSource;
     resolvePath(path: string): Observable<FileSystemEntry>;
     resolveFile(path: string): Observable<File>;
+    refresh(): Observable<void>;
 }

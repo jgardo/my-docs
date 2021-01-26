@@ -4,6 +4,7 @@ import { FileSystemEntry } from '../provider/facade/model/file-system-entry';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { IonInfiniteScroll } from '@ionic/angular';
+import { map } from 'rxjs/operators';
 
 @Component({
     selector: 'app-file-system',
@@ -29,6 +30,8 @@ export class FileSystemPage implements OnInit, AfterViewInit, OnDestroy {
     ngOnInit() {
         this.routeDataSubscription = this.route.data.subscribe(data => {
             this.fileSystemEntry = data.fileSystemEntry as FileSystemEntry;
+            this.fileSystemFacade = data.fileSystemFacade as FileSystemFacade;
+
             this.nextPage = this.fileSystemEntry.loadMoreEntries;
         });
     }
@@ -86,5 +89,22 @@ export class FileSystemPage implements OnInit, AfterViewInit, OnDestroy {
                 $event.target.disabled = true;
             }
         });
+    }
+
+    doRefresh($event: any) {
+        this.fileSystemFacade.refresh()
+            .pipe(map(() => {
+                const asArray = this.fileSystemEntry.path.split('/');
+
+                this.router.navigate([this.getFileSystemPrefix()].concat(asArray), {
+                    skipLocationChange: true,
+                    state: {
+                        refreshTime: new Date()
+                    }
+                })
+                .catch(e => ''/* TODO */)
+                .finally(() => $event.target.complete());
+             }))
+            .subscribe();
     }
 }
