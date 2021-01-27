@@ -4,15 +4,13 @@ import { Observable } from 'rxjs';
 import { DataSource } from '../facade/model/data-source';
 import { BitbucketService } from './bitbucket.service';
 import { map } from 'rxjs/operators';
-import { FileSystemFacadeCacheService } from '../facade/file-system-facade-cache.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class BitbucketDataSourceFacadeService implements DataSourceFacade {
 
-    constructor(private bitbucketServide: BitbucketService,
-                private fileSystemFacadeCacheService: FileSystemFacadeCacheService
+    constructor(private bitbucketServide: BitbucketService
     ) {
     }
 
@@ -39,6 +37,10 @@ export class BitbucketDataSourceFacadeService implements DataSourceFacade {
                     config
                 );
             }));
+    }
+
+    refresh(dataSource: DataSource): Observable<void> {
+        return this.bitbucketServide.refresh(dataSource.config);
     }
 
     delete(dataSource: DataSource): Observable<void> {

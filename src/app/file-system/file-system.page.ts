@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { IonInfiniteScroll } from '@ionic/angular';
 import { map } from 'rxjs/operators';
+import { FileSystemFacadeCacheService } from '../provider/facade/file-system-facade-cache.service';
 
 @Component({
     selector: 'app-file-system',
@@ -23,7 +24,8 @@ export class FileSystemPage implements OnInit, AfterViewInit, OnDestroy {
 
     constructor(
         private route: ActivatedRoute,
-        private router: Router
+        private router: Router,
+        private fileSystemFacadeCacheService: FileSystemFacadeCacheService
     ) {
     }
 
@@ -92,7 +94,7 @@ export class FileSystemPage implements OnInit, AfterViewInit, OnDestroy {
     }
 
     doRefresh($event: any) {
-        this.fileSystemFacade.refresh()
+        this.fileSystemFacadeCacheService.refresh(this.fileSystemFacade)
             .pipe(map(() => {
                 const asArray = this.fileSystemEntry.path.split('/');
 

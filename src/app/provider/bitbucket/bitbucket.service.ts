@@ -69,7 +69,7 @@ export class BitbucketService {
                                 providers.push(config);
 
                                 this.storage.set(BitbucketService.PROVIDERS_KEY, providers)
-                                    .then(r => {
+                                    .then(() => {
                                         const bitbucketClient = new BitbucketClient(bitbucket, config);
 
                                         subscriber.next(bitbucketClient);
@@ -84,6 +84,27 @@ export class BitbucketService {
             })
                 .catch(err => {
                     subscriber.error(err);
+                });
+        });
+    }
+
+    refresh(config: BitbucketConfig): Observable<void> {
+        return new Observable(subscriber => {
+            this.storage.get(BitbucketService.PROVIDERS_KEY)
+                .then(p => {
+                    const providers = p as Array<BitbucketConfig> || [] as Array<BitbucketConfig>;
+
+                    const existing = providers.findIndex((v) => v.repository.uuid === config.repository.uuid);
+                    if (existing >= 0) {
+                        providers.splice(existing, 1);
+                    }
+                    providers.push(config);
+
+                    this.storage.set(BitbucketService.PROVIDERS_KEY, providers)
+                        .then(() => {
+                            subscriber.next();
+                            subscriber.complete();
+                        });
                 });
         });
     }

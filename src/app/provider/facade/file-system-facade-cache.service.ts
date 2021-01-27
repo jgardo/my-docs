@@ -58,4 +58,11 @@ export class FileSystemFacadeCacheService {
                 );
         }
     }
+
+    refresh(facade: FileSystemFacade): Observable<void> {
+        return facade.refresh()
+            .pipe(mergeMap(() => {
+                return this.bitbucketService.refresh(facade.getDataSource().config);
+            }));
+    }
 }

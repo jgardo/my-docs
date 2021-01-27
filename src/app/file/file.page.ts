@@ -7,6 +7,7 @@ import { FileViewerProviderService } from './viewer/file-viewer-provider.service
 import { map } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { FileViewer } from './viewer/file-viewer';
+import { FileSystemFacadeCacheService } from '../provider/facade/file-system-facade-cache.service';
 
 @Component({
     selector: 'app-file',
@@ -28,6 +29,7 @@ export class FilePage implements OnInit, AfterViewInit, OnDestroy {
     constructor(
         @Inject(FileViewerProviderService) private fileViewerProviderService: FileViewerProviderService,
         private route: ActivatedRoute,
+        private fileSystemFacadeCacheService: FileSystemFacadeCacheService,
         private router: Router
     ) {
     }
@@ -61,7 +63,7 @@ export class FilePage implements OnInit, AfterViewInit, OnDestroy {
     }
 
     doRefresh($event: any) {
-        this.fileSystemFacade.refresh()
+        this.fileSystemFacadeCacheService.refresh(this.fileSystemFacade)
             .pipe(map(() => {
                 const path = this.file.fileSystemEntry.path + '-details';
                 const asArray = path.split('/');
