@@ -37,7 +37,7 @@ export class BitbucketWizardComponent implements AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-        this.slides.lockSwipes(true);
+        this.slides.lockSwipeToNext(true);
     }
 
     authorize() {
@@ -78,10 +78,14 @@ export class BitbucketWizardComponent implements AfterViewInit {
     }
 
     private nextSlide() {
-        this.slides.lockSwipes(false);
+        this.slides.lockSwipeToNext(false);
         this.slides.slideNext(500);
 
-        this.slides.lockSwipes(true);
+        this.slides.lockSwipeToNext(true);
 
+    }
+
+    private dismissModal() {
+        this.modalController.dismiss();
     }
 }
