@@ -3,12 +3,14 @@ import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/r
 import { Observable } from 'rxjs';
 import { FileSystemFacadeCacheService } from './file-system-facade-cache.service';
 import { FileSystemFacade } from './file-system-facade';
+import { ToastService } from '../../util/toast.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class FileSystemFacadeResolverService implements Resolve<FileSystemFacade> {
     constructor(
+        private toastService: ToastService,
         private fileSystemFacadeCacheService: FileSystemFacadeCacheService
     ) {
     }
@@ -23,7 +25,10 @@ export class FileSystemFacadeResolverService implements Resolve<FileSystemFacade
             paramMap[key] = route.paramMap.get(key);
         }
 
-        return this.resolveForUrlAndParamMap(url, paramMap);
+        return this.resolveForUrlAndParamMap(url, paramMap)
+            .pipe(
+                this.toastService.catchErrorAndShowToast()
+            );
     }
 
     resolveForUrlAndParamMap(url, paramMap): Observable<FileSystemFacade> {

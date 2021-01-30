@@ -2,10 +2,12 @@ import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular
 import { FileSystemFacade } from '../provider/facade/file-system-facade';
 import { FileSystemEntry } from '../provider/facade/model/file-system-entry';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { from, Observable, Subscription } from 'rxjs';
 import { IonInfiniteScroll } from '@ionic/angular';
-import { map } from 'rxjs/operators';
+import { mergeMap } from 'rxjs/operators';
 import { FileSystemFacadeCacheService } from '../provider/facade/file-system-facade-cache.service';
+import { ToastService } from '../util/toast.service';
+import { RefresherService } from '../util/refresher.service';
 
 @Component({
     selector: 'app-file-system',
@@ -25,6 +27,8 @@ export class FileSystemPage implements OnInit, AfterViewInit, OnDestroy {
     constructor(
         private route: ActivatedRoute,
         private router: Router,
+        private toastService: ToastService,
+        private refresherService: RefresherService,
         private fileSystemFacadeCacheService: FileSystemFacadeCacheService
     ) {
     }
@@ -95,18 +99,18 @@ export class FileSystemPage implements OnInit, AfterViewInit, OnDestroy {
 
     doRefresh($event: any) {
         this.fileSystemFacadeCacheService.refresh(this.fileSystemFacade)
-            .pipe(map(() => {
+            .pipe(mergeMap(() => {
                 const asArray = this.fileSystemEntry.path.split('/');
 
-                this.router.navigate([this.getFileSystemPrefix()].concat(asArray), {
+                return from(this.router.navigate([this.getFileSystemPrefix()].concat(asArray), {
                     skipLocationChange: true,
                     state: {
                         refreshTime: new Date()
                     }
-                })
-                .catch(e => ''/* TODO */)
-                .finally(() => $event.target.complete());
-             }))
-            .subscribe();
+                }));
+            }),
+            this.refresherService.finishRefresher($event),
+            this.toastService.catchErrorAndShowToast()
+         ).subscribe();
     }
 }

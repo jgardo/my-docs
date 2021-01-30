@@ -5,13 +5,15 @@ import { FormsModule } from '@angular/forms';
 import { FileSystemPage } from './file-system.page';
 
 import { FileSystemPageRoutingModule } from './file-system-routing.module';
+import { UtilModule } from '../util/util.module';
 
 @NgModule({
     imports: [
         IonicModule,
         CommonModule,
         FormsModule,
-        FileSystemPageRoutingModule
+        FileSystemPageRoutingModule,
+        UtilModule
     ],
     declarations: [FileSystemPage]
 })

@@ -5,12 +5,14 @@ import { FileSystemFacade } from './file-system-facade';
 import { FileSystemFacadeResolverService } from './file-system-facade-resolver.service';
 import { concatMap } from 'rxjs/operators';
 import { File } from './model/file';
+import { ToastService } from '../../util/toast.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class FileResolverService implements Resolve<File> {
     constructor(
+        private toastService: ToastService,
         private fileSystemFacadeResolverService: FileSystemFacadeResolverService
     ) {
     }
@@ -28,7 +30,8 @@ export class FileResolverService implements Resolve<File> {
 
         return this.fileSystemFacadeResolverService.resolve(route, state)
             .pipe(
-                concatMap(fsf => this.resolveForUrlAndParamMap(fsf, suffixLessUrl, paramMap))
+                concatMap(fsf => this.resolveForUrlAndParamMap(fsf, suffixLessUrl, paramMap)),
+                this.toastService.catchErrorAndShowToast()
             );
     }
 
