@@ -2,9 +2,9 @@ import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular
 import { FileSystemFacade } from '../provider/facade/file-system-facade';
 import { FileSystemEntry } from '../provider/facade/model/file-system-entry';
 import { ActivatedRoute, Router } from '@angular/router';
-import { from, Observable, Subscription } from 'rxjs';
+import { from, Observable, Subscription, throwError } from 'rxjs';
 import { IonInfiniteScroll } from '@ionic/angular';
-import { mergeMap } from 'rxjs/operators';
+import { catchError, mergeMap, tap } from 'rxjs/operators';
 import { FileSystemFacadeCacheService } from '../provider/facade/file-system-facade-cache.service';
 import { ToastService } from '../util/toast.service';
 import { RefresherService } from '../util/refresher.service';
@@ -85,16 +85,23 @@ export class FileSystemPage implements OnInit, AfterViewInit, OnDestroy {
 
     loadData($event: any) {
         this.nextPage()
-        .subscribe(fse => {
-            this.nextPage = fse.loadMoreEntries;
-            this.fileSystemEntry.entries.push(...fse.entries);
+            .pipe(
+                tap(fse => {
+                    this.nextPage = fse.loadMoreEntries;
+                    this.fileSystemEntry.entries.push(...fse.entries);
 
-            $event.target.complete();
-
-            if (!this.nextPage) {
-                $event.target.disabled = true;
-            }
-        });
+                    $event.target.complete();
+                    if (!this.nextPage) {
+                        $event.target.disabled = true;
+                    }
+                }),
+                this.toastService.catchErrorAndShowToast(),
+                catchError(err => {
+                    $event.target.complete();
+                    return throwError(err);
+                })
+            )
+        .subscribe();
     }
 
     doRefresh($event: any) {

@@ -2,7 +2,7 @@ import { FileSystemFacade } from '../facade/file-system-facade';
 import { Observable } from 'rxjs';
 import { FileSystemEntry } from '../facade/model/file-system-entry';
 import { BitbucketClient } from './bitbucket-client';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Schema } from 'bitbucket';
 import { DataSource } from '../facade/model/data-source';
 import { File } from '../facade/model/file';
@@ -66,13 +66,12 @@ export class BitbucketFileSystemFacadeService implements FileSystemFacade {
 
                 this.bitbucketClient.resolvePath(path, page)
                     .pipe(
-                        map(d => this.createFileSystemEntry(path, d)),
-                        tap(res => {
-                            subscriber.next(res);
-                            subscriber.complete();
-                        })
+                        map(d => this.createFileSystemEntry(path, d))
                     )
-                    .subscribe();
+                    .subscribe(res => {
+                        subscriber.next(res);
+                        subscriber.complete();
+                    }, err => subscriber.error(err));
             });
         } else {
             return null;
