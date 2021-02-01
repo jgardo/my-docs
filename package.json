@@ -7,9 +7,11 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e --configuration=test",
+    "test": "ng test",
+    "test:dev": "ng test --browsers=ChromeHeadlessCI",
+    "test:ci": "ng test --no-watch --browsers=ChromeHeadlessCI"
   },
   "private": true,
   "dependencies": {
@@ -56,10 +58,11 @@
     "karma-coverage-istanbul-reporter": "~3.0.2",
     "karma-jasmine": "~3.3.0",
     "karma-jasmine-html-reporter": "^1.5.0",
-    "protractor": "~7.0.0",
+    "protractor": "^7.0.0",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
     "typescript": "~3.9.5",
+    "webdriver-manager": "^12.1.8",
     "webpack": "^4.45.0"
   },
   "description": "Custom docs browser"
