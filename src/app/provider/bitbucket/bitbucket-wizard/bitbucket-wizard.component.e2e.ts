@@ -1,9 +1,9 @@
 import { AfterViewInit, Component, NgZone, ViewChild } from '@angular/core';
 import { BitbucketClientProviderService } from '../bitbucket-client-provider.service';
-import { APIClient, Schema } from 'bitbucket';
+import { APIClient, Bitbucket, Schema } from 'bitbucket';
 import { IonSlides, ModalController } from '@ionic/angular';
 import { BitbucketConfig } from '../model/bitbucket-config';
-import { environment } from '../../../../environments/environment';
+import { AsyncResponse, Params } from 'bitbucket/lib/bitbucket';
 import Workspace = Schema.Workspace;
 import Repository = Schema.Repository;
 import Branch = Schema.Branch;
@@ -41,14 +41,41 @@ export class BitbucketWizardComponent implements AfterViewInit {
     }
 
     authorize() {
-        const clientId = environment.bitbucketClientId;
-        this.bitbucketClientProviderService.retrieveRawClient(clientId).subscribe((data) => {
-            this.bitbucket = data.bitbucket;
+        const clientOptions = {
+            auth: {
+                token: '',
+            },
+        };
+        const bitbucket = new Bitbucket(clientOptions);
+        this.bitbucket = bitbucket;
 
-            this.bitbucketClientProviderService.listWorkspaces(this.bitbucket).subscribe((workspaces) => {
-                this.workspaces = workspaces;
-                this.nextSlide();
+        const mockedWorkspaces: Workspace[] = [{
+            created_on: '2021-01-23T12:28:14.533559+00:00',
+            is_private: false,
+            name: 'jg-docs-test',
+            slug: 'jg-docs-test',
+            type: 'workspace',
+            uuid: '{d460169b-59c7-4b6d-b262-355bc8db5be0}',
+        }];
+
+        const responseBody: Schema.PaginatedWorkspaces = {
+            values: mockedWorkspaces
+        };
+
+        bitbucket.workspaces.getWorkspaces = (params: Params.WorkspacesGetWorkspaces) => {
+            const response: AsyncResponse<Schema.PaginatedWorkspaces> = Promise.resolve({
+                data: responseBody,
+                headers: {},
+                status: 200,
+                url: ''
             });
+            return response;
+        };
+
+
+        this.bitbucketClientProviderService.listWorkspaces(this.bitbucket).subscribe((workspaces) => {
+            this.workspaces = workspaces;
+            this.nextSlide();
         });
     }
 

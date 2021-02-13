@@ -57,25 +57,27 @@ export class BitbucketService {
                     });
                 modal.onDidDismiss()
                     .then(m => {
-                        const {data: {bitbucket, config}} = m;
-                        this.storage.get(BitbucketService.PROVIDERS_KEY)
-                            .then(p => {
-                                const providers = p as Array<BitbucketConfig> || [] as Array<BitbucketConfig>;
+                        if (m.data) {
+                            const {data: {bitbucket, config}} = m;
+                            this.storage.get(BitbucketService.PROVIDERS_KEY)
+                                .then(p => {
+                                    const providers = p as Array<BitbucketConfig> || [] as Array<BitbucketConfig>;
 
-                                const existing = providers.findIndex((v) => v.repository.uuid === config.repository.uuid);
-                                if (existing >= 0) {
-                                    providers.splice(existing, 1);
-                                }
-                                providers.push(config);
+                                    const existing = providers.findIndex((v) => v.repository.uuid === config.repository.uuid);
+                                    if (existing >= 0) {
+                                        providers.splice(existing, 1);
+                                    }
+                                    providers.push(config);
 
-                                this.storage.set(BitbucketService.PROVIDERS_KEY, providers)
-                                    .then(() => {
-                                        const bitbucketClient = new BitbucketClient(bitbucket, config);
+                                    this.storage.set(BitbucketService.PROVIDERS_KEY, providers)
+                                        .then(() => {
+                                            const bitbucketClient = new BitbucketClient(bitbucket, config);
 
-                                        subscriber.next(bitbucketClient);
-                                        subscriber.complete();
-                                    });
-                            });
+                                            subscriber.next(bitbucketClient);
+                                            subscriber.complete();
+                                        });
+                                });
+                        }
                         return m;
                     })
                     .catch(err => {

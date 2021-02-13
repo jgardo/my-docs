@@ -10,5 +10,6 @@ describe('new App', () => {
     it('should display welcome message', () => {
         page.navigateTo();
         expect(page.getPageTitle()).toContain('Ekran główny');
+        expect(page.getUrl()).toContain('/tabs/home');
     });
 });

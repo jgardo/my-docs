@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
@@ -14,6 +14,7 @@ import { LMarkdownEditorModule } from 'ngx-markdown-editor/dist';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { UtilModule } from './util/util.module';
+import { MockService } from './util/mock.service';
 
 @NgModule({
     declarations: [AppComponent],
@@ -31,9 +32,20 @@ import { UtilModule } from './util/util.module';
         StatusBar,
         SplashScreen,
         {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
-        {provide: Window, useValue: window}
+        {provide: Window, useValue: window},
+        MockService,
+        {
+            provide: APP_INITIALIZER,
+            useFactory: configFactory,
+            deps: [MockService],
+            multi: true
+        }
     ],
     bootstrap: [AppComponent]
 })
 export class AppModule {
+}
+
+export function configFactory(mockService: MockService) {
+    return  () => mockService.init();
 }

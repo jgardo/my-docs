@@ -8,4 +8,8 @@ export class AppPage {
     getPageTitle() {
         return element(by.css('ion-title')).getText();
     }
+
+    getUrl() {
+        return browser.getCurrentUrl();
+    }
 }
