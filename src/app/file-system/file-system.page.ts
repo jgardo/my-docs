@@ -4,7 +4,7 @@ import { FileSystemEntry } from '../provider/facade/model/file-system-entry';
 import { ActivatedRoute, Router } from '@angular/router';
 import { from, Observable, Subscription, throwError } from 'rxjs';
 import { IonInfiniteScroll } from '@ionic/angular';
-import { catchError, mergeMap, tap } from 'rxjs/operators';
+import { catchError, concatMap, tap } from 'rxjs/operators';
 import { FileSystemFacadeCacheService } from '../provider/facade/file-system-facade-cache.service';
 import { ToastService } from '../util/toast.service';
 import { RefresherService } from '../util/refresher.service';
@@ -106,7 +106,7 @@ export class FileSystemPage implements OnInit, AfterViewInit, OnDestroy {
 
     doRefresh($event: any) {
         this.fileSystemFacadeCacheService.refresh(this.fileSystemFacade)
-            .pipe(mergeMap(() => {
+            .pipe(concatMap(() => {
                 const asArray = this.fileSystemEntry.path.split('/');
 
                 return from(this.router.navigate([this.getFileSystemPrefix()].concat(asArray), {

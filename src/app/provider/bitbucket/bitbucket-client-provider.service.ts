@@ -51,8 +51,7 @@ export class BitbucketClientProviderService {
     }
 
     private isValidAccessToken(value: BitbucketClientAccessToken) {
-        return value && value.accessToken
-            && value.validTo.getTime() > new Date().getTime();
+        return value && value.validTo.getTime() > new Date().getTime();
     }
 
     private openAuthorizationWindow(clientId: string) {

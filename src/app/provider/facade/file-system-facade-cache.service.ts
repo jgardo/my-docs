@@ -3,7 +3,7 @@ import { DataSource } from './model/data-source';
 import { FileSystemFacade } from './file-system-facade';
 import { Observable, of, throwError } from 'rxjs';
 import { BitbucketService } from '../bitbucket/bitbucket.service';
-import { map, mergeMap, tap } from 'rxjs/operators';
+import { concatMap, map, tap } from 'rxjs/operators';
 import { BitbucketFileSystemFacadeService } from '../bitbucket/bitbucket-file-system-facade.service';
 
 @Injectable({
@@ -32,7 +32,7 @@ export class FileSystemFacadeCacheService {
                             config
                         ));
                     }),
-                    mergeMap(datasources => {
+                    concatMap(datasources => {
                         const datasource: DataSource = datasources.find(ds => ds.id === id);
 
                         if (datasource && datasource.type === 'BITBUCKET') {
@@ -61,7 +61,8 @@ export class FileSystemFacadeCacheService {
 
     refresh(facade: FileSystemFacade): Observable<void> {
         return facade.refresh()
-            .pipe(mergeMap(() => {
+            .pipe(concatMap(() => {
+                this.facadesById[facade.getDataSource().id] = facade as FileSystemFacade;
                 return this.bitbucketService.refresh(facade.getDataSource().config);
             }));
     }

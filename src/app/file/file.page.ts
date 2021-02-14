@@ -4,7 +4,7 @@ import { FileSystemEntry } from '../provider/facade/model/file-system-entry';
 import { ActivatedRoute, Router } from '@angular/router';
 import { File } from '../provider/facade/model/file';
 import { FileViewerProviderService } from './viewer/file-viewer-provider.service';
-import { mergeMap } from 'rxjs/operators';
+import { concatMap } from 'rxjs/operators';
 import { from, Subscription } from 'rxjs';
 import { FileViewer } from './viewer/file-viewer';
 import { FileSystemFacadeCacheService } from '../provider/facade/file-system-facade-cache.service';
@@ -68,7 +68,7 @@ export class FilePage implements OnInit, AfterViewInit, OnDestroy {
 
     doRefresh($event: any) {
         this.fileSystemFacadeCacheService.refresh(this.fileSystemFacade)
-            .pipe(mergeMap(() => {
+            .pipe(concatMap(() => {
                 const path = this.file.fileSystemEntry.path + '-details';
                 const asArray = path.split('/');
 
