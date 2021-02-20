@@ -1,33 +1,20 @@
-import { FilePage } from './file-system.po';
-import { MockService } from '../util/mock.service';
-import { $$, browser, ExpectedConditions } from 'protractor';
+import { FileSystemPage } from './file-system.po';
+import { $, $$, browser, ExpectedConditions } from 'protractor';
 
 describe('new File page', () => {
-    let page: FilePage;
-    let mock: MockService;
+    let page: FileSystemPage;
 
     beforeEach(() => {
-        page = new FilePage();
-        mock = new MockService();
+        page = new FileSystemPage();
     });
 
     afterEach(async () => {
-        await mock.clearStorage();
+        await page.finalize();
     });
 
-    async function initializeFileSystem() {
-        await page.navigateToHome();
-        await mock.initializeProviders();
-        await mock.initializeAccessToken();
-        await browser.waitForAngularEnabled(true);
-        await page.navigateToDirectory();
-        await browser.waitForAngularEnabled(false);
-
-        await browser.wait(ExpectedConditions.presenceOf(page.getList()), 5000, 'Fetch list ');
-    }
-
     it('should read existing data at selected commit', async () => {
-        await initializeFileSystem();
+        await page.initialize();
+        await browser.wait(ExpectedConditions.presenceOf($('ion-item')), 5000, 'Fetch list');
 
         const listElementWithText = await $$('ion-item').getText();
         expect(listElementWithText).toContain('lots-of-files');
@@ -37,7 +24,7 @@ describe('new File page', () => {
     });
 
     it('should navigate through file system', async () => {
-        await initializeFileSystem();
+        await page.initialize();
 
         const markdownItem = page.getListElementWithText('markdown');
         await browser.wait(ExpectedConditions.presenceOf(markdownItem), 5000, 'Fetch list');
@@ -52,7 +39,7 @@ describe('new File page', () => {
     });
 
     it('should load next values after scrolling', async () => {
-        await initializeFileSystem();
+        await page.initialize();
 
         const lotsOfFilesItem = page.getListElementWithText('lots-of-files');
         await browser.wait(ExpectedConditions.presenceOf(lotsOfFilesItem), 5000, 'Fetch list');
@@ -77,16 +64,11 @@ describe('new File page', () => {
     });
 
     it('should refresh ', async () => {
-        await initializeFileSystem();
+        await page.initialize();
 
         const lotsOfFilesItem = page.getListElementWithText('lots-of-files');
-        await browser.actions()
-            .mouseDown(lotsOfFilesItem)
-            .mouseMove({x: 0, y: 100})
-            .mouseMove({x: 0, y: 100})
-            .mouseMove({x: 0, y: 100})
-            .mouseUp()
-            .perform();
+        await browser.wait(ExpectedConditions.presenceOf(lotsOfFilesItem), 5000, 'Fetch list');
+        await page.refresh(lotsOfFilesItem);
 
         const nextPageFile = page.getListElementWithText('nowy folder');
         await browser.wait(ExpectedConditions.presenceOf(nextPageFile), 5000, 'Fetch list');
@@ -96,6 +78,4 @@ describe('new File page', () => {
         expect(listElementWithText).toContain('markdown');
         expect(listElementWithText).toContain('nowy folder');
     });
-
-
 });

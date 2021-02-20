@@ -1,34 +1,29 @@
-import { browser, by, element } from 'protractor';
+import { $ } from 'protractor';
+import { BasePageObject } from '../util/base.po';
+import { MockService } from '../util/mock.service';
 
-export class HomePage {
-    navigateTo() {
-        return browser.get('/tabs/home');
+export class HomePage extends BasePageObject {
+    constructor() {
+        super(new MockService());
+    }
+
+    initialize() {
+        return this.initializeHome();
+    }
+
+    finalize() {
+        return this.finalizeMock();
     }
 
     getListElements() {
-        return element(by.css('ion-content ion-list')).all(by.css('ion-item'));
+        return $('ion-content ion-list').$$('ion-item');
     }
 
     getOnlyListElement() {
-        return element(by.css('ion-content ion-list')).all(by.css('ion-item')).first();
+        return this.getListElements().first();
     }
 
     removeElement() {
-        return element(by.css('ion-content ion-list')).all(by.css('ion-item-option')).first();
-    }
-
-    swipeItem(item1) {
-        return browser.driver.actions()
-            .mouseDown(item1)
-            .mouseMove({x: 50, y: 0})
-            .mouseMove({x: 50, y: 0})
-            .mouseMove({x: 50, y: 0})
-            .mouseUp()
-            .perform();
-    }
-
-
-    getAddFabButton() {
-        return element(by.css('ion-fab-button'));
+        return $('ion-content ion-list').$$('ion-item-option').first();
     }
 }

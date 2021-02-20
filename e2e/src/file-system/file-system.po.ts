@@ -1,12 +1,21 @@
-import { $, browser, by, element, ExpectedConditions } from 'protractor';
+import { $, by } from 'protractor';
+import { BasePageObject } from '../util/base.po';
+import { MockService } from '../util/mock.service';
 
-export class FilePage {
-    navigateToHome() {
-        return browser.get('/tabs/home');
+export class FileSystemPage extends BasePageObject {
+
+    constructor() {
+        super(
+            new MockService()
+        );
     }
 
-    navigateToDirectory() {
-        return browser.get('/tabs/home/file-system/bb-jg-docs-test-Examples');
+    async initialize() {
+        return await this.initializeFileSystem();
+    }
+
+    finalize() {
+        return this.finalizeMock();
     }
 
     getList() {
@@ -14,38 +23,18 @@ export class FilePage {
     }
 
     getListElements() {
-        return element(by.css('ion-content ion-list')).$$('ion-item');
+        return this.getList().$$('ion-item');
     }
 
     getListElementWithText(text: string) {
-        return element(by.cssContainingText('ion-item', text));
+        return this.getList().element(by.cssContainingText('ion-item', text));
     }
 
     getOnlyListElement() {
-        return element(by.css('ion-content ion-list')).all(by.css('ion-item')).first();
+        return this.getListElements().first();
     }
 
     removeElement() {
-        return element(by.css('ion-content ion-list')).all(by.css('ion-item-option')).first();
-    }
-
-    swipeItem(item1) {
-        return browser.driver.actions()
-            .mouseDown(item1)
-            .mouseMove({x: 50, y: 0})
-            .mouseMove({x: 50, y: 0})
-            .mouseMove({x: 50, y: 0})
-            .mouseUp()
-            .perform();
-    }
-
-    scrollItem(item1) {
-        browser.executeScript('arguments[0].scrollIntoView(true)', item1);
-        browser.wait(ExpectedConditions.elementToBeClickable(item1), 5000);
-    }
-
-
-    getAddFabButton() {
-        return element(by.css('ion-fab-button'));
+        return this.getList().$$('ion-item-option').first();
     }
 }

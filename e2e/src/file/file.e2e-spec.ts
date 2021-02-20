@@ -1,31 +1,19 @@
 import { FilePage } from './file.po';
-import { MockService } from '../util/mock.service';
 import { browser, by, element, ExpectedConditions } from 'protractor';
 
 describe('new File page', () => {
     let page: FilePage;
-    let mock: MockService;
 
     beforeEach(() => {
         page = new FilePage();
-        mock = new MockService();
     });
 
     afterEach(async () => {
-        await mock.clearStorage();
+        await page.finalize();
     });
 
-    async function initializeFileSystem() {
-        await page.navigateToHome();
-        await mock.initializeProviders();
-        await mock.initializeAccessToken();
-        await browser.waitForAngularEnabled(true);
-        await page.navigateToDirectory();
-        await browser.waitForAngularEnabled(false);
-    }
-
     it('should read .md file', async () => {
-        await initializeFileSystem();
+        await page.initialize();
 
         await page.navigateToMdFile();
 
@@ -44,7 +32,7 @@ describe('new File page', () => {
     });
 
     it('should read .txt file', async () => {
-        await initializeFileSystem();
+        await page.initialize();
 
         await page.navigateToTxtFile();
 
@@ -58,7 +46,7 @@ describe('new File page', () => {
     });
 
     it('should refresh .txt file', async () => {
-        await initializeFileSystem();
+        await page.initialize();
 
         await page.navigateToRefreshableFile();
 
@@ -67,13 +55,7 @@ describe('new File page', () => {
         const textBeforeRefresh = await preContent.getText();
         expect(textBeforeRefresh).toContain('Hello in 0 file');
 
-        await browser.actions()
-            .mouseDown(preContent)
-            .mouseMove({x: 0, y: 100})
-            .mouseMove({x: 0, y: 100})
-            .mouseMove({x: 0, y: 100})
-            .mouseUp()
-            .perform();
+        await page.refresh(preContent);
 
         const fileChange = element(by.cssContainingText('pre', 'Zmiana pliku'));
 

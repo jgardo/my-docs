@@ -1,12 +1,21 @@
 import { $, browser } from 'protractor';
+import { BasePageObject } from '../util/base.po';
+import { MockService } from '../util/mock.service';
 
-export class FilePage {
-    navigateToHome() {
-        return browser.get('/tabs/home');
+export class FilePage extends BasePageObject {
+
+    constructor() {
+        super(
+            new MockService()
+        );
     }
 
-    navigateToDirectory() {
-        return browser.get('/tabs/home/file-system/bb-jg-docs-test-Examples');
+    async initialize() {
+        return await this.initializeFileSystem();
+    }
+
+    finalize() {
+        return this.finalizeMock();
     }
 
     navigateToTxtFile() {

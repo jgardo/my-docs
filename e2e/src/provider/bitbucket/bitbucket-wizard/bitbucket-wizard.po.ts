@@ -1,13 +1,25 @@
-import { by, element } from 'protractor';
+import { $ } from 'protractor';
+import { BasePageObject } from '../../../util/base.po';
+import { MockService } from '../../../util/mock.service';
 
-export class BitbucketWizardPage {
+export class BitbucketWizardPage extends BasePageObject {
+
+    constructor() {
+        super(new MockService());
+    }
+    initialize() {
+        throw new Error('Method not implemented.');
+    }
+
+    finalize() {
+    }
 
     getSlides() {
-        return element(by.css('ion-slides'));
+        return $('ion-slides');
     }
 
     getAllSlides() {
-        return this.getSlides().all(by.css('ion-slide'));
+        return this.getSlides().$$('ion-slide');
     }
 
     getFirstSlide() {
@@ -15,7 +27,7 @@ export class BitbucketWizardPage {
     }
 
     getFirstSlideAuthorizeButton() {
-        return this.getAllSlides().first().element(by.css('ion-button'));
+        return this.getFirstSlide().$('ion-button');
     }
 
     getSecondSlide() {
@@ -23,10 +35,14 @@ export class BitbucketWizardPage {
     }
 
     getWorkspaces() {
-        return this.getAllSlides().get(1).element(by.css('ion-content ion-list')).element(by.css('ion-item'));
+        return this.getSecondSlide().$('ion-content ion-list').$('ion-item');
+    }
+
+    getThirdSlide() {
+        return this.getAllSlides().get(2);
     }
 
     getRepositories() {
-        return this.getAllSlides().get(2).element(by.css('ion-content ion-list')).element(by.css('ion-item'));
+        return this.getThirdSlide().$('ion-content ion-list').$('ion-item');
     }
 }

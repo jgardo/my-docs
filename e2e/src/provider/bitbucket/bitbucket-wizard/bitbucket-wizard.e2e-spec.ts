@@ -12,7 +12,7 @@ describe('new BitbucketWizard page', () => {
     });
 
     it('should authorize in bitbucket', async () => {
-        await page.navigateTo();
+        await page.navigateToHome();
         await page.getAddFabButton().click();
         browser.sleep(300);
 
