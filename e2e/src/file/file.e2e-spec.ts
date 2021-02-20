@@ -1,6 +1,6 @@
 import { FilePage } from './file.po';
 import { MockService } from '../util/mock.service';
-import { $$, browser, ExpectedConditions } from 'protractor';
+import { browser, by, element, ExpectedConditions } from 'protractor';
 
 describe('new File page', () => {
     let page: FilePage;
@@ -20,82 +20,67 @@ describe('new File page', () => {
         await mock.initializeProviders();
         await mock.initializeAccessToken();
         await browser.waitForAngularEnabled(true);
-        await page.navigateToFile();
+        await page.navigateToDirectory();
         await browser.waitForAngularEnabled(false);
-
-        await browser.wait(ExpectedConditions.presenceOf(page.getList()), 5000, 'Fetch list ');
     }
 
-    it('should read existing data at selected commit', async () => {
+    it('should read .md file', async () => {
         await initializeFileSystem();
 
-        const listElementWithText = await $$('ion-item').getText();
-        expect(listElementWithText).toContain('lots-of-files');
-        expect(listElementWithText).toContain('markdown');
-        expect(listElementWithText.indexOf('nowy folder')).toEqual(-1);
-        expect(listElementWithText.indexOf('..')).toEqual(-1);
+        await page.navigateToMdFile();
+
+        await browser.wait(ExpectedConditions.presenceOf(page.getMdEditor()), 5000, 'Fetch editor');
+        const ingredients = page.getMdEditor().$('#sk-adniki');
+        await browser.wait(ExpectedConditions.presenceOf(ingredients), 5000, 'Fetch editor');
+
+        const ingredientsText = await ingredients.getText();
+        const ingredientsTag = await ingredients.getTagName();
+        const liCount = await page.getMdEditor().$$('ul li').count();
+
+        expect(ingredientsText).toContain('Składniki');
+        expect(ingredientsTag).toContain('h2');
+
+        expect(liCount).toEqual(2);
     });
 
-    it('should navigate through file system', async () => {
+    it('should read .txt file', async () => {
         await initializeFileSystem();
 
-        const markdownItem = page.getListElementWithText('markdown');
-        await browser.wait(ExpectedConditions.presenceOf(markdownItem), 5000, 'Fetch list');
-        await markdownItem.click();
+        await page.navigateToTxtFile();
 
-        const templateItem = page.getListElementWithText('_szablon.md');
-        await browser.wait(ExpectedConditions.presenceOf(templateItem), 5000, '_szablon.md do not exists');
+        const preContent = page.getPreContent();
+        await browser.wait(ExpectedConditions.presenceOf(preContent), 5000, 'Fetch previewer');
+        const preContentText = await preContent.getText();
+        const preContentTag = await preContent.getTagName();
 
-        const parentItem = page.getListElementWithText('..');
-        await parentItem.click();
-        await browser.wait(ExpectedConditions.presenceOf(markdownItem), 5000, 'Fetch list same list');
+        expect(preContentText).toContain('Hello in 0 file');
+        expect(preContentTag).toContain('pre');
     });
 
-    it('should load next values after scrolling', async () => {
+    it('should refresh .txt file', async () => {
         await initializeFileSystem();
 
-        const lotsOfFilesItem = page.getListElementWithText('lots-of-files');
-        await browser.wait(ExpectedConditions.presenceOf(lotsOfFilesItem), 5000, 'Fetch list');
-        await lotsOfFilesItem.click();
+        await page.navigateToRefreshableFile();
 
-        const parentItem = page.getListElementWithText('..');
-        await browser.wait(ExpectedConditions.presenceOf(parentItem), 5000, 'Find parent element');
-        const listElementCount = await $$('ion-item').count();
-        expect(listElementCount).toBe(101);
+        const preContent = page.getPreContent();
+        await browser.wait(ExpectedConditions.presenceOf(preContent), 5000, 'Fetch previewer');
+        const textBeforeRefresh = await preContent.getText();
+        expect(textBeforeRefresh).toContain('Hello in 0 file');
 
-        const file = page.getListElementWithText('File180.txt');
-        const fileElem = await file.getWebElement();
-        await browser.executeScript('arguments[0].scrollIntoView(true)', fileElem);
-        await browser.wait(ExpectedConditions.elementToBeClickable(file), 5000);
-
-        const nextPageFile = page.getListElementWithText('File250.txt');
-
-        await browser.wait(ExpectedConditions.presenceOf(nextPageFile), 5000, 'Fetch list');
-
-        const listElementCountAfterLoadingNextPage = await $$('ion-item').count();
-        expect(listElementCountAfterLoadingNextPage).toBe(201);
-    });
-
-    it('should refresh ', async () => {
-        await initializeFileSystem();
-
-        const lotsOfFilesItem = page.getListElementWithText('lots-of-files');
         await browser.actions()
-            .mouseDown(lotsOfFilesItem)
+            .mouseDown(preContent)
             .mouseMove({x: 0, y: 100})
             .mouseMove({x: 0, y: 100})
             .mouseMove({x: 0, y: 100})
             .mouseUp()
             .perform();
 
-        const nextPageFile = page.getListElementWithText('nowy folder');
-        await browser.wait(ExpectedConditions.presenceOf(nextPageFile), 5000, 'Fetch list');
+        const fileChange = element(by.cssContainingText('pre', 'Zmiana pliku'));
 
-        const listElementWithText = await $$('ion-item').getText();
-        expect(listElementWithText).toContain('lots-of-files');
-        expect(listElementWithText).toContain('markdown');
-        expect(listElementWithText).toContain('nowy folder');
+        await browser.wait(ExpectedConditions.presenceOf(fileChange), 5000, 'Refresh');
+
+        const textAfterRefresh = await preContent.getText();
+        expect(textAfterRefresh).toContain('Hello in 0 file');
+        expect(textAfterRefresh).toContain('Zmiana pliku');
     });
-
-
 });
