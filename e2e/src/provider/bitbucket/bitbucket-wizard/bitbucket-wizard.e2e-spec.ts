@@ -1,6 +1,5 @@
 import { HomePage } from '../../../home/home.po';
 import { BitbucketWizardPage } from './bitbucket-wizard.po';
-import { browser, ExpectedConditions } from 'protractor';
 
 describe('new BitbucketWizard page', () => {
     let page: HomePage;
@@ -13,33 +12,29 @@ describe('new BitbucketWizard page', () => {
 
     it('should authorize in bitbucket', async () => {
         await page.navigateToHome();
+        page.apperanceOf(page.getAddFabButton());
+        page.clickable(page.getAddFabButton());
         await page.getAddFabButton().click();
-        browser.sleep(300);
 
-        browser.wait(ExpectedConditions.presenceOf(bitbucketWizardPage.getSlides()), 5000, 'Slides taking too long ');
-
+        page.apperanceOf(bitbucketWizardPage.getFirstSlideAuthorizeButton());
+        page.clickable(bitbucketWizardPage.getFirstSlideAuthorizeButton());
         expect(bitbucketWizardPage.getAllSlides().count()).toBe(3);
         expect(bitbucketWizardPage.getFirstSlideAuthorizeButton().getText()).toContain('ZALOGUJ SIĘ');
 
         await bitbucketWizardPage.getFirstSlideAuthorizeButton().click();
 
-        browser.wait(ExpectedConditions.presenceOf(bitbucketWizardPage.getWorkspaces()), 5000, 'Slides taking too long ');
+        const expectedWorkspace = bitbucketWizardPage.getWorkspaceWithText('jg-docs-test');
+        page.apperanceOf(expectedWorkspace);
+        page.clickable(expectedWorkspace);
+        await expectedWorkspace.click();
 
-        const workspaces = bitbucketWizardPage.getWorkspaces();
+        const expectedRepository = bitbucketWizardPage.getRepositoryWithText('Examples');
+        page.apperanceOf(expectedRepository);
+        page.clickable(expectedRepository);
+        await expectedRepository.click();
 
-        expect(workspaces.getText()).toContain('jg-docs-test');
-
-        await workspaces.click();
-
-        browser.wait(ExpectedConditions.presenceOf(bitbucketWizardPage.getRepositories()), 5000, 'Slides taking too long ');
-        const repositories = bitbucketWizardPage.getRepositories();
-
-        expect(repositories.getText()).toContain('Examples');
-        await repositories.click();
-
-        browser.sleep(3000);
+        page.apperanceOf(page.getListElementWithText('jg-docs-test/Examples'));
 
         expect(page.getListElements().count()).toBe(1);
-        expect(page.getOnlyListElement().getText()).toContain('jg-docs-test/Examples');
     });
 });

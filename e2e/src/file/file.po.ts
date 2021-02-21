@@ -1,4 +1,4 @@
-import { $, browser } from 'protractor';
+import { $, browser, by, element } from 'protractor';
 import { BasePageObject } from '../util/base.po';
 import { MockService } from '../util/mock.service';
 
@@ -36,5 +36,9 @@ export class FilePage extends BasePageObject {
 
     getPreContent() {
         return $('ion-content pre');
+    }
+
+    getPreContentWithText(text: string) {
+        return element(by.cssContainingText('pre', text));
     }
 }

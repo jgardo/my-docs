@@ -1,5 +1,4 @@
 import { HomePage } from './home.po';
-import { browser } from 'protractor';
 
 describe('new Home page', () => {
     let page: HomePage;
@@ -40,9 +39,7 @@ describe('new Home page', () => {
 
         await removeElement.click();
 
-        await browser.sleep(100);
-
+        await page.apperanceOf(page.getListElementWithText('Brak repozytoriów'));
         expect(page.getListElements().count()).toBe(1);
-        expect(page.getOnlyListElement().getText()).toContain('Brak repozytoriów');
     });
 });

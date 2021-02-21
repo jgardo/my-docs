@@ -1,5 +1,4 @@
 import { FilePage } from './file.po';
-import { browser, by, element, ExpectedConditions } from 'protractor';
 
 describe('new File page', () => {
     let page: FilePage;
@@ -17,9 +16,9 @@ describe('new File page', () => {
 
         await page.navigateToMdFile();
 
-        await browser.wait(ExpectedConditions.presenceOf(page.getMdEditor()), 5000, 'Fetch editor');
+        await page.apperanceOf(page.getMdEditor());
         const ingredients = page.getMdEditor().$('#sk-adniki');
-        await browser.wait(ExpectedConditions.presenceOf(ingredients), 5000, 'Fetch editor');
+        await page.apperanceOf(ingredients);
 
         const ingredientsText = await ingredients.getText();
         const ingredientsTag = await ingredients.getTagName();
@@ -37,7 +36,7 @@ describe('new File page', () => {
         await page.navigateToTxtFile();
 
         const preContent = page.getPreContent();
-        await browser.wait(ExpectedConditions.presenceOf(preContent), 5000, 'Fetch previewer');
+        await page.apperanceOf(preContent);
         const preContentText = await preContent.getText();
         const preContentTag = await preContent.getTagName();
 
@@ -51,15 +50,15 @@ describe('new File page', () => {
         await page.navigateToRefreshableFile();
 
         const preContent = page.getPreContent();
-        await browser.wait(ExpectedConditions.presenceOf(preContent), 5000, 'Fetch previewer');
+        await page.apperanceOf(preContent);
         const textBeforeRefresh = await preContent.getText();
         expect(textBeforeRefresh).toContain('Hello in 0 file');
 
         await page.refresh(preContent);
 
-        const fileChange = element(by.cssContainingText('pre', 'Zmiana pliku'));
+        const fileChange = page.getPreContentWithText('Zmiana pliku');
 
-        await browser.wait(ExpectedConditions.presenceOf(fileChange), 5000, 'Refresh');
+        await page.apperanceOf(fileChange);
 
         const textAfterRefresh = await preContent.getText();
         expect(textAfterRefresh).toContain('Hello in 0 file');

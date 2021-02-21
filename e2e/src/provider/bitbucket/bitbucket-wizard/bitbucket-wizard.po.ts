@@ -1,4 +1,4 @@
-import { $ } from 'protractor';
+import { $, by } from 'protractor';
 import { BasePageObject } from '../../../util/base.po';
 import { MockService } from '../../../util/mock.service';
 
@@ -35,7 +35,11 @@ export class BitbucketWizardPage extends BasePageObject {
     }
 
     getWorkspaces() {
-        return this.getSecondSlide().$('ion-content ion-list').$('ion-item');
+        return this.getSecondSlide().$('ion-content ion-list');
+    }
+
+    getWorkspaceWithText(text: string) {
+        return this.getWorkspaces().element(by.cssContainingText('ion-item', text));
     }
 
     getThirdSlide() {
@@ -43,6 +47,10 @@ export class BitbucketWizardPage extends BasePageObject {
     }
 
     getRepositories() {
-        return this.getThirdSlide().$('ion-content ion-list').$('ion-item');
+        return this.getThirdSlide().$('ion-content ion-list');
+    }
+
+    getRepositoryWithText(text: string) {
+        return this.getRepositories().element(by.cssContainingText('ion-item', text));
     }
 }

@@ -6,7 +6,7 @@ export abstract class BasePageObject {
     abstract initialize();
     abstract finalize();
 
-    constructor(protected mockService: MockService) {
+    protected constructor(protected mockService: MockService) {
 
     }
 
@@ -47,9 +47,8 @@ export abstract class BasePageObject {
             .perform();
     }
 
-    scrollTo(el) {
-        browser.executeScript('arguments[0].scrollIntoView(true)', el);
-        browser.wait(ExpectedConditions.elementToBeClickable(el), 5000);
+    async scrollTo(el) {
+        await browser.executeScript('arguments[0].scrollIntoView(true)', el);
     }
 
     swipeElement(el) {
@@ -64,5 +63,13 @@ export abstract class BasePageObject {
 
     getAddFabButton() {
         return $('ion-fab-button');
+    }
+
+    apperanceOf(el) {
+        return browser.wait(ExpectedConditions.presenceOf(el), 5000);
+    }
+
+    clickable(el) {
+        return browser.wait(ExpectedConditions.elementToBeClickable(el), 5000);
     }
 }

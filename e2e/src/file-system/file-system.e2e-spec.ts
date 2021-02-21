@@ -1,7 +1,7 @@
 import { FileSystemPage } from './file-system.po';
-import { $, $$, browser, ExpectedConditions } from 'protractor';
+import { $, $$ } from 'protractor';
 
-describe('new File page', () => {
+describe('new File System page', () => {
     let page: FileSystemPage;
 
     beforeEach(() => {
@@ -14,7 +14,7 @@ describe('new File page', () => {
 
     it('should read existing data at selected commit', async () => {
         await page.initialize();
-        await browser.wait(ExpectedConditions.presenceOf($('ion-item')), 5000, 'Fetch list');
+        await page.apperanceOf($('ion-item'));
 
         const listElementWithText = await $$('ion-item').getText();
         expect(listElementWithText).toContain('lots-of-files');
@@ -27,37 +27,37 @@ describe('new File page', () => {
         await page.initialize();
 
         const markdownItem = page.getListElementWithText('markdown');
-        await browser.wait(ExpectedConditions.presenceOf(markdownItem), 5000, 'Fetch list');
+        await page.apperanceOf(markdownItem);
         await markdownItem.click();
 
         const templateItem = page.getListElementWithText('_szablon.md');
-        await browser.wait(ExpectedConditions.presenceOf(templateItem), 5000, '_szablon.md do not exists');
+        await page.apperanceOf(templateItem);
 
         const parentItem = page.getListElementWithText('..');
         await parentItem.click();
-        await browser.wait(ExpectedConditions.presenceOf(markdownItem), 5000, 'Fetch list same list');
+        await page.apperanceOf(markdownItem);
     });
 
     it('should load next values after scrolling', async () => {
         await page.initialize();
 
         const lotsOfFilesItem = page.getListElementWithText('lots-of-files');
-        await browser.wait(ExpectedConditions.presenceOf(lotsOfFilesItem), 5000, 'Fetch list');
+        await page.apperanceOf(lotsOfFilesItem);
         await lotsOfFilesItem.click();
 
         const parentItem = page.getListElementWithText('..');
-        await browser.wait(ExpectedConditions.presenceOf(parentItem), 5000, 'Find parent element');
+        await page.apperanceOf(parentItem);
         const listElementCount = await $$('ion-item').count();
         expect(listElementCount).toBe(101);
 
         const file = page.getListElementWithText('File180.txt');
         const fileElem = await file.getWebElement();
-        await browser.executeScript('arguments[0].scrollIntoView(true)', fileElem);
-        await browser.wait(ExpectedConditions.elementToBeClickable(file), 5000);
+        await page.scrollTo(fileElem);
+        await page.clickable(file);
 
         const nextPageFile = page.getListElementWithText('File250.txt');
 
-        await browser.wait(ExpectedConditions.presenceOf(nextPageFile), 5000, 'Fetch list');
+        await page.apperanceOf(nextPageFile);
 
         const listElementCountAfterLoadingNextPage = await $$('ion-item').count();
         expect(listElementCountAfterLoadingNextPage).toBe(201);
@@ -67,11 +67,11 @@ describe('new File page', () => {
         await page.initialize();
 
         const lotsOfFilesItem = page.getListElementWithText('lots-of-files');
-        await browser.wait(ExpectedConditions.presenceOf(lotsOfFilesItem), 5000, 'Fetch list');
+        await page.apperanceOf(lotsOfFilesItem);
         await page.refresh(lotsOfFilesItem);
 
         const nextPageFile = page.getListElementWithText('nowy folder');
-        await browser.wait(ExpectedConditions.presenceOf(nextPageFile), 5000, 'Fetch list');
+        await page.apperanceOf(nextPageFile);
 
         const listElementWithText = await $$('ion-item').getText();
         expect(listElementWithText).toContain('lots-of-files');

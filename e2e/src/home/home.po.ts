@@ -1,4 +1,4 @@
-import { $ } from 'protractor';
+import { $, by, element } from 'protractor';
 import { BasePageObject } from '../util/base.po';
 import { MockService } from '../util/mock.service';
 
@@ -21,6 +21,10 @@ export class HomePage extends BasePageObject {
 
     getOnlyListElement() {
         return this.getListElements().first();
+    }
+
+    getListElementWithText(text: string) {
+        return element(by.cssContainingText('ion-content ion-list ion-item', text));
     }
 
     removeElement() {
