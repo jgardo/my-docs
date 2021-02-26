@@ -13,4 +13,6 @@ jobs:
       - name: Install and Build
         run: |
           export BITBUCKET_CLIENT_ID=xWBNJUgzHpYWUxAA6t
+          npm i -g @ionic/cli
+
           ionic build --prod
