@@ -12,5 +12,11 @@ jobs:
       - name: Install Dependencies
         run: npm install
       - name: Build
-        run: |
-          npm run prod
+        run: npm run prod
+        env:
+          BITBUCKET_CLIENT_ID: ${{ secrets.BITBUCKET_CLIENT_ID }}
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@4.0.0
+        with:
+          branch: gh-pages
+          folder: www
