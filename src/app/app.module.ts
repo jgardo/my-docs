@@ -11,6 +11,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { FormsModule } from '@angular/forms';
 import { LMarkdownEditorModule } from 'ngx-markdown-editor/dist';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 import { UtilModule } from './util/util.module';
 import { MockService } from './util/mock.service';
 
@@ -24,8 +26,8 @@ import { MockService } from './util/mock.service';
         IonicModule.forRoot(),
         IonicStorageModule.forRoot(),
         AppRoutingModule,
-        UtilModule
-        // ServiceWorkerModule.register('./ngsw-worker.js', { enabled: environment.production })
+        UtilModule,
+        ServiceWorkerModule.register('./ngsw-worker.js', { enabled: environment.production })
     ],
     providers: [
         StatusBar,
