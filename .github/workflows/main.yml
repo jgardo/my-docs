@@ -18,8 +18,6 @@ jobs:
           FIXED_WORKSPACE_ID: ${{ secrets.FIXED_WORKSPACE_ID }}
       - name: Adopt to gh-pages
         run: |
-          sed -i 's/\"\//\"\/jg-docs\//' www/ngsw.json
-          sed -i 's/base href=\"\//base href=\"\/jg-docs\//' www/index.html
           cp www/index.html www/404.html
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@4.0.0
