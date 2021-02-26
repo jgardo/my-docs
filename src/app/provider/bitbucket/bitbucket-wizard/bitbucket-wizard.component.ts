@@ -42,13 +42,21 @@ export class BitbucketWizardComponent implements AfterViewInit {
 
     authorize() {
         const clientId = environment.bitbucketClientId;
+        const fixedWorkspaceId = environment.fixedWorkspaceId;
         this.bitbucketClientProviderService.retrieveRawClient(clientId).subscribe((data) => {
             this.bitbucket = data.bitbucket;
 
-            this.bitbucketClientProviderService.listWorkspaces(this.bitbucket).subscribe((workspaces) => {
-                this.workspaces = workspaces;
-                this.nextSlide();
-            });
+            if (fixedWorkspaceId) {
+                this.bitbucketClientProviderService.findWorkspaceById(this.bitbucket, fixedWorkspaceId).subscribe((workspace) => {
+                    this.workspaces = [workspace];
+                    this.nextSlide();
+                });
+            } else {
+                this.bitbucketClientProviderService.listWorkspaces(this.bitbucket).subscribe((workspaces) => {
+                    this.workspaces = workspaces;
+                    this.nextSlide();
+                });
+            }
         });
     }
 

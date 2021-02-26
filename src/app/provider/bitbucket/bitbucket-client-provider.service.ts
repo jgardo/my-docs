@@ -121,6 +121,19 @@ export class BitbucketClientProviderService {
         });
     }
 
+    findWorkspaceById(bitbucket: APIClient, workspaceId: string): Observable<Workspace> {
+        return new Observable<Workspace>((subscriber) => {
+            bitbucket.workspaces.getWorkspace({ workspace: workspaceId})
+                .then(workspace => {
+                    this.ngZone.run(() => {
+                        subscriber.next(workspace.data);
+                        subscriber.complete();
+                    });
+                })
+                .catch(err => subscriber.error(err));
+        });
+    }
+
     listRepositories(bitbucket: APIClient, workspace: string): Observable<Repository[]> {
         return new Observable<Repository[]>((subscriber) => {
             bitbucket.repositories.list({workspace})
