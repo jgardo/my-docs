@@ -16,6 +16,10 @@ jobs:
         env:
           BITBUCKET_CLIENT_ID: ${{ secrets.BITBUCKET_CLIENT_ID }}
           FIXED_WORKSPACE_ID: ${{ secrets.FIXED_WORKSPACE_ID }}
+      - name: Fix
+        run: |
+          sed -I "" 's/\"\//\"\/jg-docs\//' www/ngsw.json
+          sed -I "" 's/base href=\"\//base href=\"\/jg-docs\//' www/index.html
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@4.0.0
         with:

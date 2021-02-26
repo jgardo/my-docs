@@ -55,7 +55,8 @@ export class BitbucketClientProviderService {
     }
 
     private openAuthorizationWindow(clientId: string) {
-        const redirectUrl = encodeURIComponent(this.window.location.origin + '/provider/bitbucket/oauth');
+        // @ts-ignore
+        const redirectUrl = encodeURIComponent(document.querySelector('head base').href + 'provider/bitbucket/oauth');
         this.newWindow = this.window.open('https://bitbucket.org/site/oauth2/authorize'
             + `?client_id=${clientId}`
             + `&response_type=token`
