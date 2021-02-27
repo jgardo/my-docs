@@ -3,6 +3,7 @@ import { AsyncSubject, Observable } from 'rxjs';
 import { BroadcastChannel } from 'broadcast-channel';
 import { APIClient, Bitbucket, Schema } from 'bitbucket';
 import { Storage } from '@ionic/storage';
+import { AlertController } from '@ionic/angular';
 import Workspace = Schema.Workspace;
 import Repository = Schema.Repository;
 
@@ -18,6 +19,7 @@ export class BitbucketClientProviderService {
     constructor(private window: Window,
                 private ngZone: NgZone,
                 private storage: Storage,
+                private alertController: AlertController
     ) {
         this.bitbucketClientResultAsyncSubject = new AsyncSubject<BitbucketClientResult>();
         this.newWindow = null;
@@ -54,16 +56,38 @@ export class BitbucketClientProviderService {
         return value && value.validTo.getTime() > new Date().getTime();
     }
 
-    private openAuthorizationWindow(clientId: string) {
-        // @ts-ignore
-        const redirectUrl = encodeURIComponent(document.querySelector('head base').href + 'provider/bitbucket/oauth');
-        this.newWindow = this.window.open('https://bitbucket.org/site/oauth2/authorize'
-            + `?client_id=${clientId}`
-            + `&response_type=token`
-            + `&redirect_uri=${redirectUrl}`);
+    private async openAuthorizationWindow(clientId: string) {
+        const alert = await this.alertController.create({
+            header: 'Wymagane uwierzytelnienie',
+            message: 'Aby kontynuować potrzeba uwierzytelnienia w serwisie Bitbucket.',
+            buttons: [
+                {
+                    text: 'Anuluj',
+                    role: 'cancel',
+                    cssClass: 'secondary',
+                    handler: (blah) => {
 
-        const channel = new BroadcastChannel('bitbucketAuthorization');
-        channel.onmessage = this.onBitbucketAuthorizationMessage(channel, clientId);
+                    }
+                }, {
+                    text: 'Przejdź do Bitbucket',
+                    handler: () => {
+                        // @ts-ignore
+                        const baseUrl = document.querySelector('head base').href;
+                        const redirectUrl = encodeURIComponent(baseUrl + 'provider/bitbucket/oauth');
+
+                        this.newWindow = window.open();
+                        this.newWindow.location.assign(baseUrl + 'provider/bitbucket/redirect'
+                            + `?client_id=${clientId}`
+                            + `&redirect_uri=${redirectUrl}`);
+
+                        const channel = new BroadcastChannel('bitbucketAuthorization');
+                        channel.onmessage = this.onBitbucketAuthorizationMessage(channel, clientId);
+                    }
+                }
+            ]
+        });
+
+        await alert.present();
     }
 
     private onBitbucketAuthorizationMessage(channel: BroadcastChannel<any>, clientId: string) {
