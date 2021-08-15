@@ -10,6 +10,7 @@ import { FileViewer } from './viewer/file-viewer';
 import { FileSystemFacadeCacheService } from '../provider/facade/file-system-facade-cache.service';
 import { ToastService } from '../util/toast.service';
 import { RefresherService } from '../util/refresher.service';
+import { Location } from '@angular/common';
 
 @Component({
     selector: 'app-file',
@@ -34,7 +35,8 @@ export class FilePage implements OnInit, AfterViewInit, OnDestroy {
         private fileSystemFacadeCacheService: FileSystemFacadeCacheService,
         private toastService: ToastService,
         private refresherService: RefresherService,
-        private router: Router
+        private router: Router,
+        private location: Location
     ) {
     }
 
@@ -83,5 +85,9 @@ export class FilePage implements OnInit, AfterViewInit, OnDestroy {
                 this.toastService.catchErrorAndShowToast()
             )
             .subscribe();
+    }
+
+    back(): void {
+        this.location.back();
     }
 }
