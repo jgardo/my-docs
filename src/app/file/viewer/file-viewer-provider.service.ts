@@ -3,6 +3,7 @@ import { FileViewer } from './file-viewer';
 import { DefaultFileViewerComponent } from './default-file-viewer/default-file-viewer.component';
 import { File } from '../../provider/facade/model/file';
 import { MarkdownFileViewerComponent } from './markdown-file-viewer/markdown-file-viewer.component';
+import { UrlFileViewerComponent } from './url-file-viewer/url-file-viewer.component';
 
 @Injectable()
 export class FileViewerProviderService {
@@ -26,6 +27,9 @@ export class FileViewerProviderService {
   private resolveComponentType(file: File): Type<FileViewer> {
     if (file.fileSystemEntry.name.endsWith('.md')) {
       return MarkdownFileViewerComponent;
+    }
+    if (file.fileSystemEntry.name.endsWith('.url')) {
+      return UrlFileViewerComponent;
     }
     return DefaultFileViewerComponent;
   }

@@ -10,6 +10,7 @@ import { FileViewerProviderService } from './viewer/file-viewer-provider.service
 import { MarkdownFileViewerComponent } from './viewer/markdown-file-viewer/markdown-file-viewer.component';
 import { LMarkdownEditorModule } from 'ngx-markdown-editor/dist';
 import { UtilModule } from '../util/util.module';
+import { UrlFileViewerComponent } from './viewer/url-file-viewer/url-file-viewer.component';
 
 @NgModule({
     imports: [
@@ -21,8 +22,8 @@ import { UtilModule } from '../util/util.module';
         UtilModule
     ],
     providers: [FileViewerProviderService],
-    declarations: [FilePage, DefaultFileViewerComponent, MarkdownFileViewerComponent],
-    entryComponents: [DefaultFileViewerComponent, MarkdownFileViewerComponent]
+    declarations: [FilePage, DefaultFileViewerComponent, MarkdownFileViewerComponent, UrlFileViewerComponent],
+    entryComponents: [DefaultFileViewerComponent, MarkdownFileViewerComponent, UrlFileViewerComponent]
 })
 export class FilePageModule {
 }
