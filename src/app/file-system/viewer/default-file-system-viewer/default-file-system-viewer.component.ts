@@ -2,29 +2,25 @@ import { AfterViewInit, Component, Inject, OnDestroy, OnInit, ViewChild } from '
 import { FileSystemViewer } from '../file-system-viewer';
 import { FileSystemEntry } from '../../../provider/facade/model/file-system-entry';
 import { IonInfiniteScroll } from '@ionic/angular';
-import { FileSystemViewerProviderService } from '../file-system-viewer-provider.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastService } from '../../../util/toast.service';
 import { FileSystemFacade } from '../../../provider/facade/file-system-facade';
 import { catchError, tap } from 'rxjs/operators';
-import { Observable, Subscription, throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-default-file-system-viewer',
   templateUrl: './default-file-system-viewer.component.html',
   styleUrls: ['./default-file-system-viewer.component.scss'],
 })
-export class DefaultFileSystemViewerComponent implements OnInit, AfterViewInit, OnDestroy, FileSystemViewer {
+export class DefaultFileSystemViewerComponent implements OnInit, AfterViewInit, FileSystemViewer {
 
   @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
   fileSystemFacade: FileSystemFacade;
   fileSystemEntry: FileSystemEntry;
   nextPage: () => Observable<FileSystemEntry> = null;
 
-  private routeDataSubscription: Subscription;
-
   constructor(
-      @Inject(FileSystemViewerProviderService) private fileSystemViewerProviderService: FileSystemViewerProviderService,
       private route: ActivatedRoute,
       private router: Router,
       private toastService: ToastService
@@ -32,26 +28,27 @@ export class DefaultFileSystemViewerComponent implements OnInit, AfterViewInit, 
   }
 
   ngOnInit() {
-    this.routeDataSubscription = this.route.data.subscribe(data => {
-      this.fileSystemEntry = data.fileSystemEntry as FileSystemEntry;
-      this.fileSystemFacade = data.fileSystemFacade as FileSystemFacade;
 
-      this.nextPage = this.fileSystemEntry.loadMoreEntries;
-    });
   }
 
   ngAfterViewInit(): void {
-    this.routeDataSubscription = this.route.data.subscribe(() => {
-      this.infiniteScroll.disabled = !this.fileSystemEntry.loadMoreEntries;
-    });
+    this.handleInitialInfiniteScroll();
   }
 
-  ngOnDestroy() {
-    this.routeDataSubscription.unsubscribe();
+  private handleInitialInfiniteScroll() {
+    if (this.infiniteScroll && this.fileSystemEntry) {
+      this.infiniteScroll.disabled = !this.fileSystemEntry.loadMoreEntries;
+    }
   }
 
   setFileSystemEntry(fileSystemEntry: FileSystemEntry) {
+    this.fileSystemEntry = fileSystemEntry as FileSystemEntry;
+    this.nextPage = this.fileSystemEntry.loadMoreEntries;
+    this.handleInitialInfiniteScroll();
+  }
 
+  setFileSystemFacade(fileSystemFacade: FileSystemFacade) {
+    this.fileSystemFacade = fileSystemFacade as FileSystemFacade;
   }
 
   goToItem(item: FileSystemEntry) {

@@ -8,6 +8,7 @@ import { FileSystemPageRoutingModule } from './file-system-routing.module';
 import { UtilModule } from '../util/util.module';
 import { DefaultFileSystemViewerComponent } from './viewer/default-file-system-viewer/default-file-system-viewer.component';
 import { FileSystemViewerProviderService } from './viewer/file-system-viewer-provider.service';
+import { ExampleCustomFileSystemViewerComponent } from './viewer/example-custom-file-system-viewer/example-custom-file-system-viewer.component';
 
 @NgModule({
     imports: [
@@ -18,8 +19,8 @@ import { FileSystemViewerProviderService } from './viewer/file-system-viewer-pro
         UtilModule
     ],
     providers: [FileSystemViewerProviderService],
-    entryComponents: [DefaultFileSystemViewerComponent],
-    declarations: [FileSystemPage, DefaultFileSystemViewerComponent]
+    entryComponents: [DefaultFileSystemViewerComponent, ExampleCustomFileSystemViewerComponent],
+    declarations: [FileSystemPage, DefaultFileSystemViewerComponent, ExampleCustomFileSystemViewerComponent]
 })
 export class FileSystemPageModule {
 }

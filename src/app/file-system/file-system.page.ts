@@ -44,12 +44,23 @@ export class FileSystemPage implements OnInit, AfterViewInit, OnDestroy {
             this.fileSystemEntry = data.fileSystemEntry as FileSystemEntry;
             this.fileSystemFacade = data.fileSystemFacade as FileSystemFacade;
 
+            if (this.viewContainerRef) {
+                this.currentViewer = this.fileSystemViewerProviderService.addOrReplaceViewer(this.viewContainerRef, this.fileSystemEntry);
+                this.currentViewer.setFileSystemEntry(this.fileSystemEntry);
+                this.currentViewer.setFileSystemFacade(this.fileSystemFacade);
+            }
             this.nextPage = this.fileSystemEntry.loadMoreEntries;
         });
     }
 
     ngAfterViewInit(): void {
-        this.currentViewer = this.fileSystemViewerProviderService.addViewer(this.viewContainerRef, this.fileSystemEntry);
+        this.initializeCurrentViewer();
+    }
+
+    private initializeCurrentViewer() {
+        this.currentViewer = this.fileSystemViewerProviderService.addOrReplaceViewer(this.viewContainerRef, this.fileSystemEntry);
+        this.currentViewer.setFileSystemEntry(this.fileSystemEntry);
+        this.currentViewer.setFileSystemFacade(this.fileSystemFacade);
     }
 
     ngOnDestroy() {
