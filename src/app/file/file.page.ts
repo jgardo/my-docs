@@ -21,11 +21,10 @@ export class FilePage implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('dynamic', {
         read: ViewContainerRef
     }) viewContainerRef: ViewContainerRef;
+    currentViewer: FileViewer;
 
     fileSystemFacade: FileSystemFacade;
     file: File;
-
-    currentViever: FileViewer;
 
     private routeDataSubscription: Subscription;
 
@@ -40,19 +39,19 @@ export class FilePage implements OnInit, AfterViewInit, OnDestroy {
     ) {
     }
 
-    ngAfterViewInit(): void {
-        this.currentViever = this.fileViewerProviderService.addViewer(this.viewContainerRef, this.file);
-    }
-
     ngOnInit() {
         this.routeDataSubscription = this.route.data.subscribe(data => {
             this.file  = data.file as File;
             this.fileSystemFacade = data.fileSystemFacade as FileSystemFacade;
 
-            if (this.currentViever) {
-                this.currentViever.setFile(this.file);
+            if (this.currentViewer) {
+                this.currentViewer.setFile(this.file);
             }
         });
+    }
+
+    ngAfterViewInit(): void {
+        this.currentViewer = this.fileViewerProviderService.addViewer(this.viewContainerRef, this.file);
     }
 
     ngOnDestroy() {

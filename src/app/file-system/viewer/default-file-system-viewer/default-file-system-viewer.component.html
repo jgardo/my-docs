@@ -1,0 +1,22 @@
+<ion-list>
+  <ion-list-header>
+    Lista plików:
+  </ion-list-header>
+  <ion-item (click)="goBack()" [routerLink]="backPath()"
+            *ngIf="fileSystemEntry.path !== '/'" detail>
+    <ion-icon name="folder" slot="start"></ion-icon>
+    <ion-label>..</ion-label>
+  </ion-item>
+  <ion-item (click)="goToItem(item)" [routerLink]="itemPath(item)"
+            *ngFor="let item of fileSystemEntry?.entries; let i = index" detail>
+    <ion-icon *ngIf="item.type === 'DIRECTORY'" name="folder" slot="start"></ion-icon>
+    <ion-icon *ngIf="item.type === 'FILE'" name="document" slot="start"></ion-icon>
+    <ion-label>{{item.name}}</ion-label>
+  </ion-item>
+</ion-list>
+<ion-infinite-scroll (ionInfinite)="loadData($event)" threshold="100px">
+  <ion-infinite-scroll-content
+          loadingSpinner="bubbles"
+          loadingText="Wczytuję więcej danych...">
+  </ion-infinite-scroll-content>
+</ion-infinite-scroll>
