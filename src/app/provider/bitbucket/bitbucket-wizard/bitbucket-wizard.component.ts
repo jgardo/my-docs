@@ -62,7 +62,7 @@ export class BitbucketWizardComponent implements AfterViewInit {
 
     selectWorkspace(workspace: Workspace) {
         this.selectedWorkspace = workspace;
-        this.bitbucketClientProviderService.listRepositories(this.bitbucket, workspace.name).subscribe((repositories) => {
+        this.bitbucketClientProviderService.listRepositories(this.bitbucket, workspace.uuid).subscribe((repositories) => {
             this.repositories = repositories;
             this.nextSlide();
         });
