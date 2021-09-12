@@ -1,5 +1,5 @@
 {
-  "name": "my-docs",
+  "name": "jg-docs",
   "version": "0.0.1",
   "author": "jgardo.dev",
   "homepage": "https://jgardo.dev/",
@@ -7,7 +7,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "prod": "ng build --configuration=production --base-href /my-docs/",
+    "prod": "ng build --configuration=production --base-href /jg-docs/",
     "lint": "ng lint",
     "e2e": "ng e2e --configuration=test",
     "test": "ng test",
