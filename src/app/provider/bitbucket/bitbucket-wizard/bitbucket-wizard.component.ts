@@ -71,7 +71,7 @@ export class BitbucketWizardComponent implements AfterViewInit {
     selectRepository(repository: Repository) {
         this.selectedRepository = repository;
         this.selectedBranch = repository.mainbranch;
-        this.bitbucketClientProviderService.fetchLatestCommit(this.bitbucket, this.selectedWorkspace.name, repository.name)
+        this.bitbucketClientProviderService.fetchLatestCommit(this.bitbucket, this.selectedWorkspace.uuid, repository.name)
             .subscribe((commit) => {
                 const config = new BitbucketConfig(this.selectedWorkspace,
                     this.selectedRepository,

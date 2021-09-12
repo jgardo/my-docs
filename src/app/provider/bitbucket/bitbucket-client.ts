@@ -16,7 +16,7 @@ export class BitbucketClient {
         return new Observable<string>((subscriber) => {
             this.bitbucket.commits.list({
                 repo_slug: this.config.repository.uuid,
-                workspace: this.config.workspace.name
+                workspace: this.config.workspace.uuid
             })
                 .then(({data}) => {
                     this.config.latestCommit = data.values[0].hash;
@@ -33,7 +33,7 @@ export class BitbucketClient {
                 node: this.config.latestCommit,
                 path,
                 repo_slug: this.config.repository.uuid,
-                workspace: this.config.workspace.name,
+                workspace: this.config.workspace.uuid,
                 pagelen: BitbucketClient.PAGE_LEN,
                 page,
             })

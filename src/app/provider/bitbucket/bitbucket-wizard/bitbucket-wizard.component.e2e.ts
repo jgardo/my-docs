@@ -81,7 +81,7 @@ export class BitbucketWizardComponent implements AfterViewInit {
 
     selectWorkspace(workspace: Workspace) {
         this.selectedWorkspace = workspace;
-        this.bitbucketClientProviderService.listRepositories(this.bitbucket, workspace.name).subscribe((repositories) => {
+        this.bitbucketClientProviderService.listRepositories(this.bitbucket, workspace.uuid).subscribe((repositories) => {
             this.repositories = repositories;
             this.nextSlide();
         });
@@ -90,7 +90,7 @@ export class BitbucketWizardComponent implements AfterViewInit {
     selectRepository(repository: Repository) {
         this.selectedRepository = repository;
         this.selectedBranch = repository.mainbranch;
-        this.bitbucketClientProviderService.fetchLatestCommit(this.bitbucket, this.selectedWorkspace.name, repository.name)
+        this.bitbucketClientProviderService.fetchLatestCommit(this.bitbucket, this.selectedWorkspace.uuid, repository.name)
             .subscribe((commit) => {
                 const config = new BitbucketConfig(this.selectedWorkspace,
                     this.selectedRepository,
