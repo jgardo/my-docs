@@ -1,5 +1,7 @@
 <md-editor name="Content"
            [(ngModel)]="file.content"
+           [options]="options"
+           [postRender]="postRender"
            mode="preview"
            height="100%">
 </md-editor>

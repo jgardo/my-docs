@@ -10,13 +10,22 @@ import { File } from '../../../provider/facade/model/file';
 export class MarkdownFileViewerComponent implements OnInit, FileViewer {
 
   file: File;
+  options: any;
+  postRender: any;
 
-  constructor() { }
+  constructor() {
+    this.options = {
+      enablePreviewContentClick: true
+    };
+    // tslint:disable-next-line:variable-name
+    this.postRender = (string) => {
+      return string.replaceAll('<a href', '<a target="_blank" href');
+    };
+  }
 
   ngOnInit() {}
 
   setFile(file: File) {
     this.file = file;
-
   }
 }
